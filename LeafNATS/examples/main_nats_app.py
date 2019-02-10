@@ -61,7 +61,7 @@ parser.add_argument('--copy_words', type=str2bool, default=True, help='Do you wa
 parser.add_argument('--task_key', default='summary', help='summary | title')
 # for app
 parser.add_argument('--app_model_dir', default='../model/', help='directory that stores models.')
-parser.add_argument('--app_data_dir', default='/var/www/html/openNATS/tmp', help='directory that stores data.')
+parser.add_argument('--app_data_dir', default='/var/www/html/leafNATS/tmp', help='directory that stores data.')
 
 args = parser.parse_args()
 
