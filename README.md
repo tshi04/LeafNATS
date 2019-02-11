@@ -8,8 +8,6 @@
 
 This repository is a pytorch implementation of a training framework of seq2seq models for the neural abstractive text summarization and beyond. It is an extension of [NATS](https://github.com/tshi04/NATS) which is a toolkit for Neural Abstractive Text Summarization. The goal of this framework is to make it convinient to try out new ideas in abstractive text summarization and other language generation models.
 
-
-
 ## Requirements
 
 - glob
@@ -27,12 +25,24 @@ This repository is a pytorch implementation of a training framework of seq2seq m
 
 #### Dataset
 
-In this survey, we run an extensive set of experiments with NATS on the following datasets. Here, we provide the link to CNN/Daily Mail dataset and data processing codes for Newsroom and Bytecup2018 datasets. 
+In this survey, we run an extensive set of experiments with NATS on the following datasets. Here, we provide the link to CNN/Daily Mail dataset and data processing codes for Newsroom and Bytecup2018 datasets. The preprocess data will be available upon request.
 - [CNN/Daily Mail](https://github.com/abisee/pointer-generator)
 - [Newsroom](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/tools/newsroom_process)
 - [Bytecup2018](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/tools/bytecup_process)
-The preprocess data will be shared upon request.
 
 In the dataset, \<s\> and \</s\> is used to separate sentences. \<sec\> is used to separate summaries and articles. We did not use the json format because it takes more space and be difficult to transfer between servers.
+
+#### Examples
+
+LeafNATS is current under development. A simple way to run models that have already implemented is
+- Go to https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/examples
+
+- ```Training:``` python run.py 
+
+- ```Validate:``` python run.py --task validate
+
+- ```Test:``` python run.py --task beam
+
+- ```Rouge:``` python run.py --task rouge
 
 
