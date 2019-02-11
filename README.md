@@ -22,7 +22,14 @@ This repository is a pytorch implementation of a training framework of seq2seq m
 
 **Use following scripts to**
 
-- [Set up GPU, cuda and pytorch](https://github.com/tshi04/NATS/tree/master/tools/config_server)
-- [Install pyrouge and ROUGE-1.5.5](https://github.com/tshi04/textsum/tree/master/tools/rouge_package)
+- [Set up GPU, cuda and pytorch](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/tools/config_server)
+- [Install pyrouge and ROUGE-1.5.5](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/tools/rouge_package)
 
-## Citation
+#### Dataset
+
+In this survey, we run an extensive set of experiments with NATS on the following datasets. Here, we provide the link to CNN/Daily Mail dataset and data processing codes for Newsroom and Bytecup2018 datasets. 
+- [CNN/Daily Mail](https://github.com/abisee/pointer-generator)
+- [Newsroom](https://github.com/tshi04/textsum/tree/master/tools/newsroom_process)
+- [Bytecup2018](https://github.com/tshi04/NATS/tree/master/tools/bytecup_process)
+
+In the dataset, \<s\> and \</s\> is used to separate sentences. \<sec\> is used to separate summaries and articles. We did not use the json format because it takes more space and be difficult to transfer.
