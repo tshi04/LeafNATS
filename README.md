@@ -39,7 +39,7 @@ In the dataset, \<s\> and \</s\> is used to separate sentences. \<sec\> is used 
 LeafNATS is current under development. A simple way to run models that have already implemented is
 - ```Check:``` Go to [examples](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/examples) to check models we have implemented.
 
-- ```Import``` In run.py, import the example you want to try.
+- ```Import:``` In run.py, import the example you want to try.
 
 - ```Training:``` python run.py 
 
@@ -51,7 +51,10 @@ LeafNATS is current under development. A simple way to run models that have alre
 
 #### Features
 
--- Engine
+- ```Engine``` Training frameworks
+- ```Playground``` Models, pipelines, loss functions, and data redirection
+- ```Modules``` Building blocks, beam search, word-copy for decoding
+- ```Data``` Data pre-process and batcher.
 
 ## Pretrained Models and Results
 
