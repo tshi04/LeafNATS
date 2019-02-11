@@ -29,7 +29,7 @@ Live System Demo http://dmkdt3.cs.vt.edu/leafNATS/
 
 #### Dataset
 
-In this survey, we run an extensive set of experiments with NATS on the following datasets. Here, we provide the link to CNN/Daily Mail dataset and data processing codes for Newsroom and Bytecup2018 datasets. The preprocess data will be available upon request.
+We tested different models in LeafNATS on the following datasets. Here, we provide the link to CNN/Daily Mail dataset and data processing codes for Newsroom and Bytecup2018 datasets. The preprocess data will be available upon request.
 - [CNN/Daily Mail](https://github.com/abisee/pointer-generator)
 - [Newsroom](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/tools/newsroom_process)
 - [Bytecup2018](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/tools/bytecup_process)
