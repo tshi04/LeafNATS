@@ -20,4 +20,9 @@ This repository is a pytorch implementation of a training framework of seq2seq m
 
 ## Usuage
 
+**Use following scripts to**
+
+- [Set up GPU, cuda and pytorch](https://github.com/tshi04/NATS/tree/master/tools/config_server)
+- [Install pyrouge and ROUGE-1.5.5](https://github.com/tshi04/textsum/tree/master/tools/rouge_package)
+
 ## Citation
