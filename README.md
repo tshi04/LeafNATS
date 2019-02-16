@@ -10,9 +10,9 @@ This repository is a pytorch implementation of a learning framework for implemen
 It is an extension of [NATS](https://github.com/tshi04/NATS) toolkit, which is a toolkit for Neural Abstractive Text Summarization. 
 The goal of this framework is to make it convinient to try out new ideas in abstractive text summarization and other language generation tasks.
 
-Live System Demo http://dmkdt3.cs.vt.edu/leafNATS/
+### Live System Demo http://dmkdt3.cs.vt.edu/leafNATS/
 
-Demo Video https://www.youtube.com/watch?v=exLbfFxVFfM&t=25s
+### Demo Video https://www.youtube.com/watch?v=exLbfFxVFfM&t=25s
 
 ## Requirements
 
