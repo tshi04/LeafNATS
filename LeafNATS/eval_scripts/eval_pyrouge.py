@@ -14,8 +14,8 @@ r = Rouge155()
 def run_pyrouge(args):
     '''
     Use pyrouge to evaluate scores.
+    You need to install pyrouge, which can be installed from our tools.
     '''
-    
     curr_key = urandom(5).hex()
     rouge_path = os.path.join(args.data_dir, 'nats_results', curr_key)
     if os.path.exists(rouge_path):
@@ -29,15 +29,17 @@ def run_pyrouge(args):
     cnt = 1
     for line in fp:
         arr = re.split('<sec>', line[:-1])
+        # reference
         rmm = re.split('<pad>|<s>|</s>', arr[1])
         rmm = list(filter(None, rmm))
         rmm = [' '.join(list(filter(None, re.split('\s', sen)))) for sen in rmm]
         rmm = list(filter(None, rmm))
-
+        # generated
         smm = re.split('<stop>', arr[0])
         smm = list(filter(None, smm))
-        smm = re.split('<pad>|<s>|</s>', smm[0])
+        smm = re.split('<pad>|<s>', smm[0])
         smm = list(filter(None, smm))
+        smm = [sen.replace('</s>', '') for sen in smm if '</s>' in sen]
         smm = [' '.join(list(filter(None, re.split('\s', sen)))) for sen in smm]
         smm = list(filter(None, smm))
         fout = open(os.path.join(sys_smm_path, 'sum.'+str(cnt).zfill(5)+'.txt'), 'w')
