@@ -24,6 +24,7 @@ parser.add_argument('--val_num_batch', type=int, default=30, help='how many batc
 parser.add_argument('--nbestmodel', type=int, default=10, help='How many models you want to keep?')
 
 parser.add_argument('--continue_training', type=str2bool, default=True, help='Do you want to continue?')
+parser.add_argument('--train_base_model', type=str2bool, default=False, help='True: Use Pretrained Param | False: Transfer Learning')
 parser.add_argument('--use_move_avg', type=str2bool, default=False, help='move average')
 parser.add_argument('--use_optimal_model', type=str2bool, default=True, help='Do you want to use the best model?')
 parser.add_argument('--model_optimal_key', default='0,0', help='epoch,batch')

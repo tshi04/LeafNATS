@@ -109,6 +109,12 @@ class natsEnd2EndBase(object):
                 params += list(self.train_models[model_name].parameters())
             except:
                 params = list(self.train_models[model_name].parameters())
+        if self.args.train_base_model:
+            for model_name in self.base_models:
+                try:
+                    params += list(self.base_models[model_name].parameters())
+                except:
+                    params = list(self.base_models[model_name].parameters())
         # define optimizer
         optimizer = self.build_optimizer(params)
         # load checkpoint
