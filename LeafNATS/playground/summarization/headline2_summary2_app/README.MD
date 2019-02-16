@@ -1,3 +1,11 @@
+
+## Model Framework
+<p align="left">
+  <img src="figure/multitask_transfer.png" width="500" title="The Model" alt="Cannot Access">
+</p>
+
+## Results
+
 | DATASET  | MODEL | ROUGE-1 | ROUGE-2 | ROUGE-L |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
 | NEWSROOM-SUMMARY | C10110 MULTI-TASK | 39.85 | 28.37 | 36.91 |
