@@ -302,6 +302,10 @@ class natsEnd2EndBase(object):
                             fmodel = open(os.path.join(out_dir, model_name+'.model'), 'wb')
                             torch.save(self.train_models[model_name].state_dict(), fmodel)
                             fmodel.close()
+                        try:
+                            shutil.copy2(os.path.join(self.args.data_dir, self.args.file_vocab), out_dir)
+                        except:
+                            pass
                     for itm in best_arr[:self.args.nbestmodel]:
                         print('model={}_{}, loss={}, time={}'.format(itm[1], itm[2], itm[3], itm[4]))
                         
