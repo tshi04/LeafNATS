@@ -119,7 +119,7 @@ class natsEnd2EndBase(object):
         optimizer = self.build_optimizer(params)
         # load checkpoint
         uf_model = [0, -1]
-        out_dir = os.path.join(self.args.data_dir, 'nats_results')
+        out_dir = os.path.join('..', 'nats_results')
         if not os.path.exists(out_dir):
             os.mkdir(out_dir)
         if self.args.continue_training:
@@ -215,7 +215,7 @@ class natsEnd2EndBase(object):
             self.init_base_model_params()
         
         best_arr = []
-        val_file = os.path.join(self.args.data_dir, 'nats_results', 'model_validate.txt')
+        val_file = os.path.join('..', 'nats_results', 'model_validate.txt')
         if os.path.exists(val_file):
             fp = open(val_file, 'r')
             for line in fp:
@@ -231,7 +231,7 @@ class natsEnd2EndBase(object):
             while 1:
                 model_para_files = []
                 model_para_files = glob.glob(os.path.join(
-                    self.args.data_dir, 'nats_results', sorted(list(self.train_models))[0]+'*.model'))
+                    '..', 'nats_results', sorted(list(self.train_models))[0]+'*.model'))
                 for j in range(len(model_para_files)):
                     arr = re.split('\_|\.', model_para_files[j])
                     arr = [int(arr[-3]), int(arr[-2]), model_para_files[j]]
@@ -251,7 +251,7 @@ class natsEnd2EndBase(object):
                         try:
                             for model_name in self.train_models:
                                 fl_tmp = os.path.join(
-                                    self.args.data_dir, 'nats_results', 
+                                    '..', 'nats_results', 
                                     model_name+'_'+str(fl_[0])+'_'+str(fl_[1])+'.model')
                                 self.train_models[model_name].load_state_dict(
                                     torch.load(fl_tmp, map_location=lambda storage, loc: storage))
@@ -288,7 +288,7 @@ class natsEnd2EndBase(object):
                     best_arr.append([fl_[2], fl_[0], fl_[1], losses_out, end_time-start_time])
                     best_arr = sorted(best_arr, key=lambda bb: bb[3])
                     if best_arr[0][0] == fl_[2]:
-                        out_dir = os.path.join(self.args.data_dir, 'nats_results', 'model')
+                        out_dir = os.path.join('..', 'nats_results', 'model')
                         try:
                             shutil.rmtree(out_dir)
                         except:
@@ -312,7 +312,7 @@ class natsEnd2EndBase(object):
                         if os.path.exists(itm[0]):
                             for model_name in self.train_models:
                                 fl_tmp = os.path.join(
-                                    self.args.data_dir, 'nats_results', 
+                                    '..', 'nats_results', 
                                     model_name+'_'+str(itm[1])+'_'+str(itm[2])+'.model')
                                 os.unlink(fl_tmp)
                     fout = open(val_file, 'w')
@@ -348,7 +348,7 @@ class natsEnd2EndBase(object):
             self.train_models[model_name].eval()
         with torch.no_grad(): 
             if self.args.use_optimal_model:
-                model_valid_file = os.path.join(self.args.data_dir, 'nats_results', 'model_validate.txt')
+                model_valid_file = os.path.join('..', 'nats_results', 'model_validate.txt')
                 fp = open(model_valid_file, 'r')
                 for line in fp:
                     arr = re.split('\s', line[:-1])
@@ -361,7 +361,7 @@ class natsEnd2EndBase(object):
             print("You choose to use *{} for decoding.".format(model_optimal_key))
             
             for model_name in self.train_models: 
-                model_optimal_file = os.path.join(self.args.data_dir, 'nats_results', model_name+model_optimal_key)
+                model_optimal_file = os.path.join('..', 'nats_results', model_name+model_optimal_key)
                 self.train_models[model_name].load_state_dict(torch.load(
                     model_optimal_file, map_location=lambda storage, loc: storage))
 

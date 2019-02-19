@@ -164,7 +164,7 @@ class modelNatsTransfer(modelPointerGenerator):
         For the beam search in testing.
         '''
         start_time = time.time()
-        fout = open(os.path.join(self.args.data_dir, 'nats_results', self.args.file_output), 'w')
+        fout = open(os.path.join('..', 'nats_results', self.args.file_output), 'w')
         for batch_id in range(_nbatch):
             if self.args.oov_explicit:
                 ext_id2oov, src_var, src_var_ex, src_arr, src_msk, trg_arr \

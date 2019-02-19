@@ -17,7 +17,7 @@ def run_pyrouge(args):
     You need to install pyrouge, which can be installed from our tools.
     '''
     curr_key = urandom(5).hex()
-    rouge_path = os.path.join(args.data_dir, 'nats_results', curr_key)
+    rouge_path = os.path.join('..', 'nats_results', curr_key)
     if os.path.exists(rouge_path):
         shutil.rmtree(rouge_path)
     os.makedirs(rouge_path)
@@ -25,7 +25,7 @@ def run_pyrouge(args):
     mod_smm_path = os.path.join(rouge_path, 'model_summaries')
     os.makedirs(sys_smm_path)
     os.makedirs(mod_smm_path)
-    fp = open(os.path.join(args.data_dir, 'nats_results', args.file_output), 'r')
+    fp = open(os.path.join('..', 'nats_results', args.file_output), 'r')
     cnt = 1
     for line in fp:
         arr = re.split('<sec>', line[:-1])
@@ -59,7 +59,7 @@ def run_pyrouge(args):
         cnt += 1
     fp.close()
 
-    path_to_rouge = os.path.abspath(os.path.join(args.data_dir, 'nats_results'))
+    path_to_rouge = os.path.abspath(os.path.join('..', 'nats_results'))
     r.system_dir = os.path.join(path_to_rouge, curr_key, 'system_summaries')
     r.model_dir = os.path.join(path_to_rouge, curr_key, 'model_summaries')
     r.system_filename_pattern = 'sum.(\d+).txt'
@@ -67,7 +67,7 @@ def run_pyrouge(args):
 
     output = r.convert_and_evaluate()
     print(output)
-    fout = open(os.path.join(args.data_dir, 'nats_results', 'rouge_'+curr_key+'_'+args.file_output), 'w')
+    fout = open(os.path.join('..', 'nats_results', 'rouge_'+curr_key+'_'+args.file_output), 'w')
     fout.write(output)
     fout.close()
 
