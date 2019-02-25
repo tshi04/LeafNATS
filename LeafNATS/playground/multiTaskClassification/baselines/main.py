@@ -6,7 +6,7 @@ import torch
 import argparse
 
 from LeafNATS.utils.utils import str2bool
-from LeafNATS.playground.multiTaskClassification.base.modelMTC_base import modelMTCBase
+from LeafNATS.playground.multiTaskClassification.baselines.modelMTC_baselines import modelMTCBaselines
 from LeafNATS.eval_scripts.eval_MultiTaskClassification import evaluation
 
 parser = argparse.ArgumentParser()
@@ -60,6 +60,6 @@ run model
 if args.task == 'evaluate':
     evaluation(args)
 else:
-    model = modelMTCBase(args)
+    model = modelMTCBaselines(args)
     if args.task == 'train':
         model.train()
