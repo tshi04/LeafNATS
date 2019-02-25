@@ -169,8 +169,11 @@ class modelNatsTransfer(modelPointerGenerator):
             if self.args.oov_explicit:
                 ext_id2oov, src_var, src_var_ex, src_arr, src_msk, trg_arr \
                 = process_minibatch_explicit_test(
-                    batch_id=batch_id, path_=self.args.data_dir,
-                    batch_size=self.args.test_batch_size, vocab2id=self.batch_data['vocab2id'], 
+                    batch_id=batch_id, 
+                    path_=os.path.join('..', 'nats_results'),
+                    fkey_=self.args.task, 
+                    batch_size=self.args.test_batch_size, 
+                    vocab2id=self.batch_data['vocab2id'], 
                     src_lens=self.args.src_seq_lens
                 )
                 src_msk = src_msk.to(self.args.device)
@@ -178,8 +181,11 @@ class modelNatsTransfer(modelPointerGenerator):
                 src_var_ex = src_var_ex.to(self.args.device)
             else:
                 src_var, src_arr, src_msk, trg_arr = process_minibatch_test(
-                    batch_id=batch_id, path_=self.args.data_dir, 
-                    batch_size=self.args.test_batch_size, vocab2id=self.batch_data['vocab2id'], 
+                    batch_id=batch_id, 
+                    path_=os.path.join('..', 'nats_results'),
+                    fkey_=self.args.task, 
+                    batch_size=self.args.test_batch_size, 
+                    vocab2id=self.batch_data['vocab2id'], 
                     src_lens=args.src_seq_lens
                 )
                 ext_id2oov = {}

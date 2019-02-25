@@ -96,12 +96,14 @@ class modelPointerGenerator(natsEnd2EndBase):
         '''
         get batch data
         '''
-        batch_data = {}
         if self.args.oov_explicit:
             ext_id2oov, src_var, trg_input_var, \
             src_var_ex, trg_output_var = process_minibatch_explicit(
-                batch_id=batch_id, path_=self.args.data_dir, fkey_=self.args.task, 
-                batch_size=self.args.batch_size, vocab2id=self.batch_data['vocab2id'], 
+                batch_id=batch_id, 
+                path_=os.path.join('..', 'nats_results'), 
+                fkey_=self.args.task, 
+                batch_size=self.args.batch_size, 
+                vocab2id=self.batch_data['vocab2id'], 
                 max_lens=[self.args.src_seq_lens, self.args.trg_seq_lens])
             src_var = src_var.to(self.args.device)
             src_var_ex = src_var_ex.to(self.args.device)
@@ -109,7 +111,9 @@ class modelPointerGenerator(natsEnd2EndBase):
             trg_output_var = trg_output_var.to(self.args.device)
         else:
             src_var, trg_input_var, trg_output_var = process_minibatch(
-                batch_id=batch_id, path_=self.args.data_dir, fkey_=self.args.task, 
+                batch_id=batch_id, 
+                path_=os.path.join('..', 'nats_results'),
+                fkey_=self.args.task, 
                 batch_size=self.args.batch_size, 
                 vocab2id=self.batch_data['vocab2id'], 
                 max_lens=[self.args.src_seq_lens, self.args.trg_seq_lens])
@@ -208,8 +212,11 @@ class modelPointerGenerator(natsEnd2EndBase):
             if self.args.oov_explicit:
                 ext_id2oov, src_var, src_var_ex, src_arr, src_msk, trg_arr \
                 = process_minibatch_explicit_test(
-                    batch_id=batch_id, path_=self.args.data_dir,
-                    batch_size=self.args.test_batch_size, vocab2id=self.batch_data['vocab2id'], 
+                    batch_id=batch_id, 
+                    path_=os.path.join('..', 'nats_results'),
+                    fkey_=self.args.task, 
+                    batch_size=self.args.test_batch_size, 
+                    vocab2id=self.batch_data['vocab2id'], 
                     src_lens=self.args.src_seq_lens
                 )
                 src_msk = src_msk.to(self.args.device)
@@ -217,9 +224,12 @@ class modelPointerGenerator(natsEnd2EndBase):
                 src_var_ex = src_var_ex.to(self.args.device)
             else:
                 src_var, src_arr, src_msk, trg_arr = process_minibatch_test(
-                    batch_id=batch_id, path_=self.args.data_dir, 
-                    batch_size=self.args.test_batch_size, vocab2id=self.batch_data['vocab2id'], 
-                    src_lens=args.src_seq_lens
+                    batch_id=batch_id, 
+                    path_=os.path.join('..', 'nats_results'),
+                    fkey_=self.args.task, 
+                    batch_size=self.args.test_batch_size, 
+                    vocab2id=self.batch_data['vocab2id'], 
+                    src_lens=self.args.src_seq_lens
                 )
                 ext_id2oov = {}
                 src_msk = src_msk.to(self.args.device)

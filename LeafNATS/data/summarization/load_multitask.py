@@ -21,7 +21,7 @@ headline<sec>summary<sec>article.
 '''
 def process_minibatch(batch_id, path_, fkey_, batch_size, vocab2id, max_lens=[20, 100, 400]):
     
-    file_ = os.path.join(path_, 'batch_'+fkey_+'_'+str(batch_size), str(batch_id))
+    file_ = os.path.join(path_, 'batch_{}_{}'.format(fkey_, batch_size), str(batch_id))
     fp = open(file_, 'r')
     src_arr = []
     sum_arr = []
@@ -105,7 +105,7 @@ OOV explicit.
 '''
 def process_minibatch_explicit(batch_id, path_, fkey_, batch_size, vocab2id, max_lens=[20, 100, 400]):
     
-    file_ = os.path.join(path_, 'batch_'+fkey_+'_'+str(batch_size), str(batch_id))
+    file_ = os.path.join(path_, 'batch_{}_{}'.format(fkey_, batch_size), str(batch_id))
     # build extended vocabulary
     fp = open(file_, 'r')
     ext_vocab = {}
@@ -253,9 +253,9 @@ def process_minibatch_explicit(batch_id, path_, fkey_, batch_size, vocab2id, max
 '''
 Process the minibatch test
 '''
-def process_minibatch_test(batch_id, path_, batch_size, vocab2id, src_lens):
+def process_minibatch_test(batch_id, path_, fkey_, batch_size, vocab2id, src_lens):
     
-    file_ = os.path.join(path_, 'batch_test_'+str(batch_size), str(batch_id))
+    file_ = os.path.join(path_, 'batch_{}_{}'.format(fkey_, batch_size), str(batch_id))
     fp = open(file_, 'r')
     src_arr = []
     src_idx = []
@@ -300,9 +300,9 @@ def process_minibatch_test(batch_id, path_, batch_size, vocab2id, src_lens):
 Process the minibatch test. 
 OOV explicit.
 '''
-def process_minibatch_explicit_test(batch_id, path_, batch_size, vocab2id, src_lens):
+def process_minibatch_explicit_test(batch_id, path_, fkey_, batch_size, vocab2id, src_lens):
     
-    file_ = os.path.join(path_, 'batch_test_'+str(batch_size), str(batch_id))
+    file_ = os.path.join(path_, 'batch_{}_{}'.format(fkey_, batch_size), str(batch_id))
     # build extended vocabulary
     fp = open(file_, 'r')
     ext_vocab = {}

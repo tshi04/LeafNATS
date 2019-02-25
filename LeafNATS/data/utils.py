@@ -23,6 +23,8 @@ def construct_vocab(file_, max_size=200000, mincount=5):
     with open(file_, 'r') as fp:
         for line in fp:
             arr = re.split(' ', line[:-1])
+            if len(arr) == 1:
+                arr = re.split('<sec>', line[:-1])
             if arr[0] == ' ':
                 continue
             if arr[0] in word_pad:
@@ -37,15 +39,14 @@ def construct_vocab(file_, max_size=200000, mincount=5):
     return vocab2id, id2vocab
 '''
 Users cannot rewrite this function, unless they want to rewrite the engine.
-For engine: nats_end2end
 
 Split the corpus into batches.
 advantage: Don't worry about the memeory.
-disadvantage: Takes some time to split the batches. No good when you have 10 million data.
+disadvantage: Takes some time to split the batches.
 '''
-def create_batch_file(path_, fkey_, file_, batch_size):
-    file_name = os.path.join(path_, file_)
-    folder = os.path.join(path_, 'batch_'+fkey_+'_'+str(batch_size))
+def create_batch_file(path_data, path_work, is_shuffle, fkey_, file_, batch_size):
+    file_name = os.path.join(path_data, file_)
+    folder = os.path.join(path_work, 'batch_'+fkey_+'_'+str(batch_size))
     
     try:
         shutil.rmtree(folder)
@@ -58,7 +59,7 @@ def create_batch_file(path_, fkey_, file_, batch_size):
     for line in fp:
         corpus_arr.append(line.lower())
     fp.close()
-    if fkey_ == 'train' or fkey_== 'validate':
+    if is_shuffle:
         random.shuffle(corpus_arr)
         
     cnt = 0
@@ -84,3 +85,35 @@ def create_batch_file(path_, fkey_, file_, batch_size):
         cnt += 1
     
     return cnt
+'''
+Users cannot rewrite this function, unless they want to rewrite the engine.
+
+This will store data in memeory.
+'''
+def create_batch_memory(path_, file_, is_shuffle, batch_size):
+    
+    file_name = os.path.join(path_, file_)
+    
+    corpus_arr = []
+    fp = open(file_name, 'r')
+    for line in fp:
+        corpus_arr.append(line.lower())
+    fp.close()
+    if is_shuffle:
+        random.shuffle(corpus_arr)
+        
+    data_split = []
+    for itm in corpus_arr:
+        try:
+            arr.append(itm)
+        except:
+            arr = [itm]
+        if len(arr) == batch_size:
+            data_split.append(arr)
+            arr = []
+        
+    if len(arr) > 0:
+        data_split.append(arr)
+        arr = []
+    
+    return data_split

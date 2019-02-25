@@ -159,8 +159,10 @@ class natsEnd2EndBase(object):
         cclb = 0
         for epoch in range(uf_model[0], self.args.n_epoch):
             n_batch = create_batch_file(
-                path_=self.args.data_dir,
-                fkey_=self.args.task,
+                path_data=self.args.data_dir,
+                path_work=os.path.join('..', 'nats_results'),
+                is_shuffle=True,
+                fkey_=self.args.task, 
                 file_=self.args.file_corpus,
                 batch_size=self.args.batch_size
             )
@@ -260,8 +262,10 @@ class natsEnd2EndBase(object):
                     else:
                         continue
                     val_batch = create_batch_file(
-                        path_=self.args.data_dir,
-                        fkey_=self.args.task,
+                        path_data=self.args.data_dir,
+                        path_work=os.path.join('..', 'nats_results'),
+                        is_shuffle=True,
+                        fkey_=self.args.task, 
                         file_=self.args.file_val,
                         batch_size=self.args.batch_size
                     )
@@ -339,8 +343,10 @@ class natsEnd2EndBase(object):
             self.init_base_model_params()
                     
         _nbatch = create_batch_file(
-            path_=self.args.data_dir,
-            fkey_='test',
+            path_data=self.args.data_dir,
+            path_work=os.path.join('..', 'nats_results'),
+            is_shuffle=False,
+            fkey_=self.args.task,
             file_=self.args.file_test,
             batch_size=self.args.test_batch_size
         )

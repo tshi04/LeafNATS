@@ -113,7 +113,9 @@ class modelMultiTask(modelPointerGenerator):
         if self.args.oov_explicit:
             ext_id2oov, ttl_input_var, sum_input_var, src_var, \
             ttl_output_var, sum_output_var, src_var_ex = process_minibatch_explicit(
-                batch_id=batch_id, path_=self.args.data_dir, fkey_=self.args.task, 
+                batch_id=batch_id, 
+                path_=os.path.join('..', 'nats_results'),
+                fkey_=self.args.task, 
                 batch_size=self.args.batch_size, 
                 vocab2id=self.batch_data['vocab2id'], 
                 max_lens=[self.args.ttl_seq_lens, self.args.sum_seq_lens, self.args.src_seq_lens])
@@ -125,7 +127,9 @@ class modelMultiTask(modelPointerGenerator):
             src_var_ex = src_var_ex.to(self.args.device)
         else:
             ttl_input_var, ttl_output_var, sum_input_var, sum_output_var, src_var = process_minibatch(
-                batch_id=batch_id, path_=self.args.data_dir, fkey_=self.args.task, 
+                batch_id=batch_id, 
+                path_=os.path.join('..', 'nats_results'),
+                fkey_=self.args.task, 
                 batch_size=self.args.batch_size, 
                 vocab2id=self.batch_data['vocab2id'], 
                 max_lens=[self.args.ttl_seq_lens, self.args.sum_seq_lens, self.args.src_seq_lens])
@@ -236,8 +240,11 @@ class modelMultiTask(modelPointerGenerator):
             if self.args.oov_explicit:
                 ext_id2oov, src_var, src_var_ex, src_arr, src_msk, sum_arr, ttl_arr \
                 = process_minibatch_explicit_test(
-                    batch_id=batch_id, path_=self.args.data_dir, 
-                    batch_size=self.args.test_batch_size, vocab2id=self.batch_data['vocab2id'], 
+                    batch_id=batch_id, 
+                    path_=os.path.join('..', 'nats_results'),
+                    fkey_=self.args.task,
+                    batch_size=self.args.test_batch_size, 
+                    vocab2id=self.batch_data['vocab2id'], 
                     src_lens=self.args.src_seq_lens)
                 src_msk = src_msk.to(self.args.device)
                 src_var = src_var.to(self.args.device)
@@ -245,8 +252,11 @@ class modelMultiTask(modelPointerGenerator):
             else:
                 src_var, src_arr, src_msk, sum_arr, ttl_arr \
                 = process_minibatch_test(
-                    batch_id=batch_id, path_=self.args.data_dir, 
-                    batch_size=self.args.test_batch_size, vocab2id=self.batch_data['vocab2id'], 
+                    batch_id=batch_id, 
+                    path_=os.path.join('..', 'nats_results'),
+                    fkey_=self.args.task,
+                    batch_size=self.args.test_batch_size, 
+                    vocab2id=self.batch_data['vocab2id'], 
                     src_lens=self.args.src_seq_lens)
                 src_msk = src_msk.to(self.args.device)
                 src_var = src_var.to(self.args.device)

@@ -2,7 +2,9 @@
 @author Tian Shi
 Please contact tshi@vt.edu
 '''
+import re
 import torch
+import torch.nn.functional as F
 from torch.autograd import Variable
 
 class EncoderCNN(torch.nn.Module):
@@ -10,24 +12,24 @@ class EncoderCNN(torch.nn.Module):
     def __init__(
         self,
         emb_dim,
-        list_kernel_size, # 3,4,5
-        list_kernel_nums  # 100, 200, 100
+        kernel_size, # 3,4,5
+        kernel_nums  # 100, 200, 100
     ):
         '''
         Implementation of CNN encoder.
         '''
         super(EncoderCNN, self).__init__()
         
-        kSize = re.split(',', list_kernel_size)
+        kSize = re.split(',', kernel_size)
         kSize = [int(itm) for itm in kSize]
-        kNums = re.split(',', list_kernel_nums)
+        kNums = re.split(',', kernel_nums)
         kNums = [int(itm) for itm in kNums]
         if len(kSize) != len(kNums):
             print("Size mismatch!")
             
         self.convs1 = torch.nn.ModuleList([
             torch.nn.Conv2d(1, kNums[k], (kSize[k], emb_dim)) 
-            for k in range(len(kNums))]).cuda()
+            for k in range(len(kNums))])
         
     def forward(self, input_):
         '''

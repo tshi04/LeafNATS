@@ -60,6 +60,8 @@ parser.add_argument('--beam_size', type=int, default=5, help='beam size.')
 parser.add_argument('--test_batch_size', type=int, default=1, help='batch size for beam search.')
 parser.add_argument('--copy_words', type=str2bool, default=True, help='Do you want to copy words?')
 parser.add_argument('--task_key', default='summary', help='summary | title')
+# for evaluation
+parser.add_argument('--file_output', default='summary.txt', help='test output file')
 # for app
 parser.add_argument('--app_model_dir', default='../mt_data_spacy/nats_results/model/', help='directory that stores models.')
 parser.add_argument('--app_data_dir', default='/var/www/html/openNATS/tmp', help='directory that stores data.')
