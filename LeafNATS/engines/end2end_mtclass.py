@@ -31,6 +31,7 @@ class End2EndBase(object):
         self.train_data = []
         self.val_data = []
         self.test_data = []
+        self.vis_data = []
         
         self.pred_data = []
         self.true_data = []
@@ -52,6 +53,13 @@ class End2EndBase(object):
         raise NotImplementedError
         
     def init_base_model_params(self):
+        '''
+        Initialize Base Model Parameters.
+        self.base_models.
+        '''
+        raise NotImplementedError
+    
+    def init_train_model_params(self):
         '''
         Initialize Base Model Parameters.
         self.base_models.
@@ -84,6 +92,12 @@ class End2EndBase(object):
         '''
         raise NotImplementedError
         
+    def visualization_worker(self, batch_id, vis_dir):
+        '''
+        Used to visualization attention weights.
+        '''
+        raise NotImplementedError
+        
     def run_evaluation(self):
         '''
         Used in decoding.
@@ -103,8 +117,6 @@ class End2EndBase(object):
         print(self.train_models)
         if len(self.base_models) > 0:
             self.init_base_model_params()
-            for model_name in self.base_models: 
-                self.base_models[model_name].eval()
         # here it is necessary to put list. Instead of directly append. 
         for model_name in self.train_models:
             try:
@@ -171,6 +183,8 @@ class End2EndBase(object):
             '''
             Train
             '''
+            if cc_model > 0:
+                epoch -= 1
             print('====================================')
             print('Training Epoch: {}'.format(epoch+1))
             self.train_data = create_batch_memory(
@@ -196,7 +210,7 @@ class End2EndBase(object):
                 if batch_id%self.args.checkpoint == 0:
                     for model_name in self.train_models:                    
                         fmodel = open(os.path.join(
-                            out_dir, model_name+'_'+str(epoch)+'.model'), 'wb')
+                            out_dir, model_name+'_'+str(epoch+1)+'.model'), 'wb')
                         torch.save(self.train_models[model_name].state_dict(), fmodel)
                         fmodel.close()
                 show_progress(batch_id+1, n_batch)
@@ -204,7 +218,7 @@ class End2EndBase(object):
             # write models
             for model_name in self.train_models:
                 fmodel = open(os.path.join(
-                    out_dir, model_name+'_'+str(epoch)+'.model'), 'wb')
+                    out_dir, model_name+'_'+str(epoch+1)+'.model'), 'wb')
                 torch.save(self.train_models[model_name].state_dict(), fmodel)
                 fmodel.close()
         
@@ -229,12 +243,12 @@ class End2EndBase(object):
                 print()
                 self.pred_data = np.array(self.pred_data).astype(int)
                 np.savetxt(
-                    os.path.join('..', 'nats_results', 'validate_pred_{}.txt'.format(epoch)), 
+                    os.path.join('..', 'nats_results', 'validate_pred_{}.txt'.format(epoch+1)), 
                     self.pred_data, fmt='%d')
     
                 self.true_data = np.array(self.true_data).astype(int)
                 np.savetxt(
-                    os.path.join('..', 'nats_results', 'validate_true_{}.txt'.format(epoch)), 
+                    os.path.join('..', 'nats_results', 'validate_true_{}.txt'.format(epoch+1)), 
                     self.true_data, fmt='%d')
             
                 self.run_evaluation()
@@ -258,16 +272,53 @@ class End2EndBase(object):
                 print()
                 self.pred_data = np.array(self.pred_data).astype(int)
                 np.savetxt(
-                    os.path.join('..', 'nats_results', 'test_pred_{}.txt'.format(epoch)), 
+                    os.path.join('..', 'nats_results', 'test_pred_{}.txt'.format(epoch+1)), 
                     self.pred_data, fmt='%d')
     
                 self.true_data = np.array(self.true_data).astype(int)
                 np.savetxt(
-                    os.path.join('..', 'nats_results', 'test_true_{}.txt'.format(epoch)), 
+                    os.path.join('..', 'nats_results', 'test_true_{}.txt'.format(epoch+1)), 
                     self.true_data, fmt='%d')
             
                 self.run_evaluation()
-                
     
-    
+    def visualization(self):
+        '''
+        Visualization
+        '''
+        self.build_vocabulary()
+        self.build_models()
+        print(self.base_models)
+        print(self.train_models)
+        if len(self.base_models) > 0:
+            self.init_base_model_params()
+        if len(self.train_models) > 0:
+            self.init_train_model_params()
+            
+        self.vis_data = create_batch_memory(
+            path_=self.args.data_dir,
+            file_=self.args.file_vis,
+            is_shuffle=False,
+            batch_size=self.args.batch_size
+        )
         
+        vis_dir = '../nats_results/attn_vis'
+        if not os.path.exists(vis_dir):
+            os.mkdir(vis_dir)
+        else:
+            shutil.rmtree(vis_dir)
+            os.mkdir(vis_dir)
+        
+        with torch.no_grad():
+            
+            print('Begin Visualization')
+            n_batch = len(self.vis_data)
+            print('The number of batches (visualization): {}'.format(n_batch))
+            for batch_id in range(n_batch):
+
+                self.build_batch(self.vis_data[batch_id])
+                self.visualization_worker(batch_id, vis_dir)
+
+                show_progress(batch_id+1, n_batch)
+            print()
+                        

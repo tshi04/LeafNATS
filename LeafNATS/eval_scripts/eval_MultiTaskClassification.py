@@ -8,14 +8,14 @@ def evaluation(args):
     We use f-score, accuracy, MSE to evaluation the performance of different models.
     Here, the best model is selected based on the averaged f-score.
     '''
-    score_test = 0
-    score_validate = 0
-    mdx_test = 0
-    mdx_validate = 0
+    score_test = 0.0
+    score_validate = 0.0
+    mdx_test = 1
+    mdx_validate = 1
     memo = []
-    for epoch in range(args.n_epoch):
+    for epoch in range(1, args.n_epoch+1):
         print('='*50)
-        print('Epoch: {}'.format(epoch+1))
+        print('Epoch: {}'.format(epoch))
         score_dict = {}
 
         mem_score = {'validate': [], 'test': []}
@@ -88,7 +88,7 @@ def evaluation(args):
     out2 = []
     out3 = []
     for k in range(args.n_tasks):
-        [p1, r1, f1, accu, mse] = memo[mdx_validate]['validate'][k]
+        [p1, r1, f1, accu, mse] = memo[mdx_validate-1]['validate'][k]
         print('f_score={}, Accuracy={}, MSE={}'.format(
             np.round(f1, 4), np.round(accu, 4), np.round(mse, 4)))
         out1.append(str(np.round(f1, 4)))
@@ -100,7 +100,7 @@ def evaluation(args):
     out2 = []
     out3 = []
     for k in range(args.n_tasks):
-        [p1, r1, f1, accu, mse] = memo[mdx_validate]['test'][k]
+        [p1, r1, f1, accu, mse] = memo[mdx_validate-1]['test'][k]
         print('f_score={}, Accuracy={}, MSE={}'.format(
             np.round(f1, 4), np.round(accu, 4), np.round(mse, 4)))
         out1.append(str(np.round(f1, 4)))
@@ -115,7 +115,7 @@ def evaluation(args):
     out2 = []
     out3 = []
     for k in range(args.n_tasks):
-        [p1, r1, f1, accu, mse] = memo[mdx_test]['validate'][k]
+        [p1, r1, f1, accu, mse] = memo[mdx_test-1]['validate'][k]
         print('f_score={}, Accuracy={}, MSE={}'.format(
             np.round(f1, 4), np.round(accu, 4), np.round(mse, 4)))
         out1.append(str(np.round(f1, 4)))
@@ -127,7 +127,7 @@ def evaluation(args):
     out2 = []
     out3 = []
     for k in range(args.n_tasks):
-        [p1, r1, f1, accu, mse] = memo[mdx_test]['test'][k]
+        [p1, r1, f1, accu, mse] = memo[mdx_test-1]['test'][k]
         print('f_score={}, Accuracy={}, MSE={}'.format(
             np.round(f1, 4), np.round(accu, 4), np.round(mse, 4)))
         out1.append(str(np.round(f1, 4)))

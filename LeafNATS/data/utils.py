@@ -11,10 +11,11 @@ import numpy as np
 
 import torch
 from torch.autograd import Variable
-'''
-Construct vocabulary
-'''
+
 def construct_vocab(file_, max_size=200000, mincount=5):
+    '''
+    Construct vocabulary
+    '''
     vocab2id = {'<s>': 2, '</s>': 3, '<pad>': 1, '<unk>': 0, '<stop>': 4}
     id2vocab = {2: '<s>', 3: '</s>', 1: '<pad>', 0: '<unk>', 4: '<stop>'}
     word_pad = {'<s>': 2, '</s>': 3, '<pad>': 1, '<unk>': 0, '<stop>': 4}
@@ -37,14 +38,15 @@ def construct_vocab(file_, max_size=200000, mincount=5):
                 break
     
     return vocab2id, id2vocab
-'''
-Users cannot rewrite this function, unless they want to rewrite the engine.
 
-Split the corpus into batches.
-advantage: Don't worry about the memeory.
-disadvantage: Takes some time to split the batches.
-'''
 def create_batch_file(path_data, path_work, is_shuffle, fkey_, file_, batch_size):
+    '''
+    Users cannot rewrite this function, unless they want to rewrite the engine.
+
+    Split the corpus into batches.
+    advantage: Don't worry about the memeory.
+    disadvantage: Takes some time to split the batches.
+    '''
     file_name = os.path.join(path_data, file_)
     folder = os.path.join(path_work, 'batch_'+fkey_+'_'+str(batch_size))
     

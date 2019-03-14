@@ -62,13 +62,13 @@ class modelMultiTaskApp(modelMultiTask):
             article = re.split('\s', article)
             article = list(filter(None, article))
             data_input['content_token'] = article
-            
+
             self.args.src_seq_lens = len(article)
             ext_id2oov, src_var, src_var_ex, src_arr, src_msk = \
             process_data_app(data_input, self.batch_data['vocab2id'], self.args.src_seq_lens)
             self.batch_data['ext_id2oov'] = ext_id2oov
             src_msk = src_msk.to(self.args.device)
-            
+
             curr_batch_size = src_var.size(0)
             src_text_rep = src_var.unsqueeze(1).clone().repeat(
                 1, self.args.beam_size, 1).view(-1, src_var.size(1)).to(self.args.device)
@@ -77,7 +77,7 @@ class modelMultiTaskApp(modelMultiTask):
                     1, self.args.beam_size, 1).view(-1, src_var_ex.size(1)).to(self.args.device)
             else:
                 src_text_rep_ex = src_text_rep.clone()
-            
+
             self.args.task_key = 'title'
             beam_seq, beam_prb, beam_attn_ = fast_beam_search(
                 self.args, self.base_models, self.batch_data,
@@ -95,7 +95,7 @@ class modelMultiTaskApp(modelMultiTask):
                 if wd != '<s>' and wd != '</s>':
                     out_arr.append({"key": wd, "attention": beam_out[idx].tolist()})
             data_input[self.args.task_key] = out_arr
-                
+
             self.args.task_key = 'summary'
             beam_seq, beam_prb, beam_attn_ = fast_beam_search(
                 self.args, self.base_models, self.batch_data,
@@ -113,10 +113,10 @@ class modelMultiTaskApp(modelMultiTask):
                 if wd != '<s>' and wd != '</s>':
                     out_arr.append({"key": wd, "attention": beam_out[idx].tolist()})
             data_input[self.args.task_key] = out_arr
-            
+
             print('Write {}.'.format(fTmp+'_out.json'))
             fout = open(fTmp+'_out.json', 'w')
             json.dump(data_input, fout)
             fout.close()
-            
+
             os.unlink(curr_file)

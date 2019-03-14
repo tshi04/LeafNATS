@@ -101,8 +101,6 @@ class natsEnd2EndBase(object):
         print(self.train_models)
         if len(self.base_models) > 0:
             self.init_base_model_params()
-            for model_name in self.base_models: 
-                self.base_models[model_name].eval()
         # here it is necessary to put list. Instead of directly append. 
         for model_name in self.train_models:
             try:

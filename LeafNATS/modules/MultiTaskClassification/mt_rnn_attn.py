@@ -42,10 +42,10 @@ class modelRNNATTN(torch.nn.Module):
         ).to(device)
         
         self.attn_in = torch.nn.ModuleList(
-            [torch.nn.Linear(hidden_dim*2, hidden_dim) 
+            [torch.nn.Linear(hidden_dim*2, hidden_dim, bias=False) 
              for k in range(n_tasks)]).to(device)
         self.attn_out = torch.nn.ModuleList(
-            [torch.nn.Linear(hidden_dim, 1) 
+            [torch.nn.Linear(hidden_dim, 1, bias=False) 
              for k in range(n_tasks)]).to(device)
         
         self.fc = torch.nn.ModuleList(
@@ -65,7 +65,7 @@ class modelRNNATTN(torch.nn.Module):
             attn = self.attn_out[k](attn).squeeze(2)
             attn = torch.softmax(attn, 1)
         
-            cv0 = torch.bmm(attn.unsqueeze(1), rnn_output).squeeze(1)
+            cv0 = torch.tanh(torch.bmm(attn.unsqueeze(1), rnn_output).squeeze(1))
             output_.append(self.fc[k](cv0))
         
         output_ = torch.cat(output_, 0).view(self.n_tasks, batch_size, self.n_class)

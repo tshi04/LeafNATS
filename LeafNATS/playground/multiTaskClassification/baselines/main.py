@@ -49,7 +49,7 @@ parser.add_argument('--cnn_kernel_size', default='3,4,5', help='---')
 parser.add_argument('--cnn_kernel_nums', default='100,100,100', help='---')
 # RNN coefficient
 parser.add_argument('--rnn_network', default='gru', help='RNN: gru | lstm')
-parser.add_argument('--rnn_nLayers', type=int, default=2, help='number of layers')
+parser.add_argument('--rnn_nLayers', type=int, default=1, help='number of layers')
 parser.add_argument('--rnn_hidden_dim', type=int, default=128, help='encoder hidden dimension')
 
 args = parser.parse_args()

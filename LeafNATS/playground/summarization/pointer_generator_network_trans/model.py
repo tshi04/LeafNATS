@@ -83,18 +83,22 @@ class modelNatsTransfer(modelPointerGenerator):
         '''
         for model_name in self.base_models:
             fl_ = os.path.join(self.args.base_model_dir, model_name+'.model')
-            self.base_models[model_name].load_state_dict(torch.load(fl_))
+            self.base_models[model_name].load_state_dict(
+                torch.load(fl_, map_location=lambda storage, loc: storage))
 
     def build_pipelines(self):
         '''
         here we have all data flow from the input to output
         '''
-        src_emb = self.base_models['embedding_base'].get_embedding(self.batch_data['src_var'])
-        encoder_hy0, _ = self.base_models['encoder_base'](src_emb)
+        with torch.no_grad():
+            src_emb = self.base_models['embedding_base'].get_embedding(self.batch_data['src_var'])
+            encoder_hy0, _ = self.base_models['encoder_base'](src_emb)
+        
         encoder_hy, hidden_encoder = self.train_models['encoder'](encoder_hy0)
         hidden_decoder = self.train_models['encoder2decoder'](hidden_encoder)
         
-        trg_emb = self.base_models['embedding_base'].get_embedding(self.batch_data['trg_input_var'])
+        with torch.no_grad():
+            trg_emb = self.base_models['embedding_base'].get_embedding(self.batch_data['trg_input_var'])
         
         batch_size = self.batch_data['src_var'].size(0)
         src_seq_len = self.batch_data['src_var'].size(1)
@@ -116,7 +120,8 @@ class modelNatsTransfer(modelPointerGenerator):
         # consume a lot of memory.
         if self.args.share_emb_weight:
             decoder_proj = self.train_models['decoder2proj'](trg_h_reshape)
-            logits_ = self.base_models['embedding_base'].get_decode2vocab(decoder_proj)
+            with torch.no_grad():
+                logits_ = self.base_models['embedding_base'].get_decode2vocab(decoder_proj)
         else:
             logits_ = self.train_models['decoder2vocab'](trg_h_reshape)
         logits_ = logits_.view(trg_h.size(0), trg_h.size(1), logits_.size(1))
