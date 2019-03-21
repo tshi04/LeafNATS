@@ -73,7 +73,7 @@ if not args.pointer_net:
     args.oov_explicit = False
 
 if args.task == "app":
-    from LeafNATS.playground.summarization.headline2_summary2_app.model_app import modelApp
+    from .model_app import modelApp
 
     model = modelApp(args)
     model.app2Go()

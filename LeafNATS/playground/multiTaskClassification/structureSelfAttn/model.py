@@ -11,7 +11,7 @@ from LeafNATS.utils.utils import *
 
 from LeafNATS.modules.encoder.encoder_rnn import EncoderRNN
 '''
-pointer generator network
+Application: multi-aspect sentiment classification.
 ''' 
 class modelSSA(modelMTCBase):
     
@@ -20,8 +20,7 @@ class modelSSA(modelMTCBase):
             
     def build_models(self):
         '''
-        build all models.
-        in this model source and target share embeddings
+        Build models.
         '''
         self.train_models['embedding'] = torch.nn.Embedding(
             self.batch_data['vocab_size'], self.args.emb_dim
@@ -64,7 +63,7 @@ class modelSSA(modelMTCBase):
         
     def build_pipe(self):
         '''
-        Shared pipe
+        Pipe: Input to logits and attention.
         '''
         review_emb = self.train_models['embedding'](self.batch_data['review'])
         batch_size = review_emb.size(0)
@@ -92,7 +91,7 @@ class modelSSA(modelMTCBase):
         
     def build_pipelines(self):
         '''
-        here we have all data flow from the input to output
+        From pipe to loss.
         '''
         logits, out_attn = self.build_pipe()
         logits = logits.contiguous().view(-1, self.args.n_class)
@@ -106,20 +105,3 @@ class modelSSA(modelMTCBase):
         loss = self.loss_criterion(logits, self.batch_data['rating'].view(-1))
 
         return loss + loss_cv
-    
-    def test_worker(self):
-        '''
-        For the testing.
-        '''
-        logits, _ = self.build_pipe()
-        logits = torch.softmax(logits, dim=2)
-        
-        ratePred = logits.topk(1, dim=2)[1].squeeze(2).data.cpu().numpy()
-        ratePred += 1
-        ratePred = ratePred.tolist()
-        
-        rateTrue = self.batch_data['rating'].data.cpu().numpy()
-        rateTrue += 1
-        rateTrue = rateTrue.tolist()
-        
-        return ratePred, rateTrue

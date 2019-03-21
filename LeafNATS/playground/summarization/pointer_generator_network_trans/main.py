@@ -6,7 +6,7 @@ import argparse
 import torch
 
 from LeafNATS.utils.utils import str2bool
-from LeafNATS.playground.summarization.pointer_generator_network_trans.model import modelNatsTransfer
+from .model import modelNatsTransfer
 from LeafNATS.eval_scripts.eval_pyrouge import run_pyrouge
 
 parser = argparse.ArgumentParser()

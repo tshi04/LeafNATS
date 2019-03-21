@@ -6,7 +6,7 @@ import torch
 import argparse
 
 from LeafNATS.utils.utils import str2bool
-from LeafNATS.playground.multiTaskClassification.structureSelfAttn.model import modelSSA
+from .model import modelSSA
 from LeafNATS.eval_scripts.eval_MultiTaskClassification import evaluation
 
 parser = argparse.ArgumentParser()

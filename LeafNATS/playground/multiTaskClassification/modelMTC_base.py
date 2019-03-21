@@ -44,6 +44,28 @@ class modelMTCBase(End2EndBase):
         optimizer = torch.optim.Adam(params, lr=self.args.learning_rate)
                 
         return optimizer
+    
+    def init_base_model_params(self):
+        '''
+        Initialize Model Parameters
+        You can do the train_models as well.
+        '''
+        for model_name in self.base_models:
+            fl_ = os.path.join(self.args.base_model_dir, model_name+'.model')
+            self.base_models[model_name].load_state_dict(
+                torch.load(fl_, map_location=lambda storage, loc: storage))
+    
+    def init_train_model_params(self):
+        '''
+        Initialize Model Parameters
+        You can do the train_models as well.
+        '''
+        for model_name in self.train_models:
+            fl_ = os.path.join(
+                self.args.train_model_dir, 
+                model_name+'_'+str(self.args.best_model)+'.model')
+            self.train_models[model_name].load_state_dict(
+                torch.load(fl_, map_location=lambda storage, loc: storage))
         
     def build_pipe(self):
         '''
@@ -54,6 +76,7 @@ class modelMTCBase(End2EndBase):
     def build_pipelines(self):
         '''
         here we have all data flow from the input to output
+        Can overwrite.
         '''
         logits = self.build_pipe()
         logits = logits.contiguous().view(-1, self.args.n_class)
@@ -81,7 +104,7 @@ class modelMTCBase(End2EndBase):
         
     def run_evaluation(self):
         '''
-        For the evaluation.
+        For evaluation.
         '''
         self.pred_data = np.array(self.pred_data)
         self.true_data = np.array(self.true_data)

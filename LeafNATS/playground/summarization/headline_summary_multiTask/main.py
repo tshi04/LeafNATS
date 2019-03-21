@@ -75,7 +75,7 @@ if not args.pointer_net:
     args.oov_explicit = False
 
 if args.task == 'train' or args.task == 'validate' or args.task == 'beam':
-    from LeafNATS.playground.summarization.headline_summary_multiTask.model import modelMultiTask
+    from .model import modelMultiTask
     
     model = modelMultiTask(args)
     if args.task == "train":
@@ -91,7 +91,7 @@ if args.task == "rouge":
     run_pyrouge(args)
     
 if args.task == "app":
-    from LeafNATS.playground.summarization.headline_summary_multiTask.model_app import modelMultiTaskApp
+    from .model_app import modelMultiTaskApp
 
     model = modelMultiTaskApp(args)
     model.app2Go()

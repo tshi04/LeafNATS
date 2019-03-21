@@ -8,7 +8,9 @@ import torch
 from torch.autograd import Variable
 '''
 Process the minibatch.
+
 ID Meta<sec>Features<sec>ratings<sec>review
+e.g., 0<sec>0<sec>1 3 1 4<sec>review
 '''
 def process_minibatch(input_, vocab2id, max_lens):
     

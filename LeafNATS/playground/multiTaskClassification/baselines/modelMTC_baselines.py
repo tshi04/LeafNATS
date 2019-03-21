@@ -9,7 +9,8 @@ from LeafNATS.playground.multiTaskClassification.modelMTC_base import modelMTCBa
 from LeafNATS.data.MultiTaskClassification.process_minibatch_v1 import process_minibatch
 from LeafNATS.utils.utils import *
 '''
-pointer generator network
+Multi-aspect sentiment classification.
+Formulated as multi-task learning problem.
 ''' 
 class modelMTCBaselines(modelMTCBase):
     
@@ -18,8 +19,10 @@ class modelMTCBaselines(modelMTCBase):
             
     def build_models(self):
         '''
-        build all models.
-        in this model source and target share embeddings
+        Models:
+        mtCNN
+        mtRNN
+        mtRNNATTN
         '''
         if self.args.mtModel == 'mtCNN':
             from LeafNATS.modules.MultiTaskClassification.mt_cnn import modelCNN
@@ -79,7 +82,8 @@ class modelMTCBaselines(modelMTCBase):
         
     def build_pipe(self):
         '''
-        Shared pipe
+        Pipe
+        From input to logits
         '''
         return self.train_models['model'](self.batch_data['review'])
     

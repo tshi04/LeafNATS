@@ -21,6 +21,10 @@ class modelRNN(torch.nn.Module):
         nLayers,
         device
     ):
+        '''
+        This is an implementation of
+        Bi-LSTM and Bi-GRU based multi-aspect sentiment classification baseline.
+        '''
         super(modelRNN, self).__init__()        
         self.vocab_size = vocab_size
         self.nLayers = nLayers
@@ -46,7 +50,10 @@ class modelRNN(torch.nn.Module):
              for k in range(n_tasks)]).to(device)
         
     def forward(self, review):
-        
+        '''
+        input: review
+        output: encoded vector.
+        '''
         emb = self.embedding(review)
         batch_size = emb.size(0)
         

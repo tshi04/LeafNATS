@@ -6,7 +6,9 @@ import torch
 from torch.autograd import Variable
 
 class natsEncoder(torch.nn.Module):
-    
+    '''
+    RNN encoder for nats
+    '''
     def __init__(
         self,
         emb_dim,
@@ -14,9 +16,6 @@ class natsEncoder(torch.nn.Module):
         rnn_network,
         device = torch.device("cpu")
     ):
-        '''
-        embedding and decoding.
-        '''
         super(natsEncoder, self).__init__()
         self.hidden_size = hidden_size
         self.rnn_network = rnn_network
@@ -37,7 +36,7 @@ class natsEncoder(torch.nn.Module):
 
     def forward(self, input_):
         '''
-        get encoding
+        RNN encoder for nats
         '''
         batch_size = input_.size(0)
         

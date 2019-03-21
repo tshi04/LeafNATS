@@ -16,6 +16,7 @@ from LeafNATS.utils.utils import show_progress
 class End2EndBase(object):
     '''
     End2End training for multi-task classification.
+    We start this engine for document-level multi-aspect sentiment classification.
     Possibly extend to other classification tasks.
     Light weight. Data should be relevatively small.
     Limitation. Cannot handle dropout.

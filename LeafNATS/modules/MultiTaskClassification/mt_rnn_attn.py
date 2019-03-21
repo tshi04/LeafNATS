@@ -17,10 +17,15 @@ class modelRNNATTN(torch.nn.Module):
         vocab_size,
         emb_dim,
         hidden_dim, # RNN hidden
-        rnn_network,
+        rnn_network, # LSTM or GRU
         nLayers,
         device
     ):
+        '''
+        This is an implementation of
+        Attention based multi-aspect sentiment classification model.
+        Encoder can be LSTM or GRU.
+        '''
         super(modelRNNATTN, self).__init__()        
         self.vocab_size = vocab_size
         self.nLayers = nLayers
@@ -53,7 +58,10 @@ class modelRNNATTN(torch.nn.Module):
              for k in range(n_tasks)]).to(device)
         
     def forward(self, review):
-        
+        '''
+        input: review (embedding)
+        output: context vector
+        '''
         emb = self.embedding(review)
         batch_size = emb.size(0)
         

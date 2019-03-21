@@ -11,7 +11,7 @@ class EncoderCNN(torch.nn.Module):
     
     def __init__(
         self,
-        emb_dim,
+        input_size, # input_ dimension
         kernel_size, # 3,4,5
         kernel_nums  # 100, 200, 100
     ):
@@ -25,10 +25,10 @@ class EncoderCNN(torch.nn.Module):
         kNums = re.split(',', kernel_nums)
         kNums = [int(itm) for itm in kNums]
         if len(kSize) != len(kNums):
-            print("Size mismatch!")
+            raise ValueError
             
         self.convs1 = torch.nn.ModuleList([
-            torch.nn.Conv2d(1, kNums[k], (kSize[k], emb_dim)) 
+            torch.nn.Conv2d(1, kNums[k], (kSize[k], input_size)) 
             for k in range(len(kNums))])
         
     def forward(self, input_):

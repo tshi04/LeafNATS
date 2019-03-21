@@ -19,6 +19,10 @@ class modelCNN(torch.nn.Module):
         kernel_nums,  # 100,200,100
         device
     ):
+        '''
+        This is an implementation of 
+        CNN based multi-aspect sentiment classification baseline.
+        '''
         super(modelCNN, self).__init__()        
         self.vocab_size = vocab_size
         self.device = device
@@ -46,7 +50,12 @@ class modelCNN(torch.nn.Module):
              for k in range(n_tasks)]).to(device)
         
     def forward(self, review):
-        
+        '''
+        input:
+            review
+        output:
+            features
+        '''
         emb = self.embedding(review)
         batch_size = emb.shape[0]
         

@@ -9,14 +9,14 @@ class EncoderRNN(torch.nn.Module):
     
     def __init__(
         self,
-        emb_dim,
+        emb_dim, # input_dim
         hidden_size,
         nLayers,
         rnn_network,
         device = torch.device("cpu")
     ):
         '''
-        Read again encoder
+        RNN encoder
         '''
         super(EncoderRNN, self).__init__()
         self.hidden_size = hidden_size

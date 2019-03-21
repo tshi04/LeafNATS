@@ -6,7 +6,7 @@ import torch
 import argparse
 
 from LeafNATS.utils.utils import str2bool
-from LeafNATS.playground.multiTaskClassification.baselines.modelMTC_baselines import modelMTCBaselines
+from .modelMTC_baselines import modelMTCBaselines
 from LeafNATS.eval_scripts.eval_MultiTaskClassification import evaluation
 
 parser = argparse.ArgumentParser()

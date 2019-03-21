@@ -14,7 +14,7 @@ class natsEncoder2Decoder(torch.nn.Module):
         rnn_network
     ):
         '''
-        encoder rnn to decoder rnn
+        encoder rnn 2 decoder rnn.
         '''
         super(natsEncoder2Decoder, self).__init__()
         self.rnn_network = rnn_network

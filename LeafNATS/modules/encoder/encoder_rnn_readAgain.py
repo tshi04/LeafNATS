@@ -15,7 +15,7 @@ class ReadAgainEncoder(torch.nn.Module):
         device = torch.device("cpu")
     ):
         '''
-        Read again encoder
+        Read-again encoder
         '''
         super(ReadAgainEncoder, self).__init__()
         self.hidden_size = hidden_size

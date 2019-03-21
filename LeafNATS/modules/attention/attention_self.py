@@ -29,7 +29,7 @@ class AttentionSelf(torch.nn.Module):
             attn_: attention weights
             cv: context vector
         '''
-        attn_ = torch.tanh(self.attn_in(input_))
+        attn_ = F.tanh(self.attn_in(input_))
         attn_ = self.attn_warp(attn_).squeeze(2)
         attn_ = torch.softmax(attn_, dim=1)
         cv = torch.bmm(attn_.unsqueeze(1), input_).squeeze(1)

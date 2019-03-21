@@ -39,6 +39,35 @@ def construct_vocab(file_, max_size=200000, mincount=5):
     
     return vocab2id, id2vocab
 
+def load_vocab_pretrain(file_pretrain_vocab, file_pretrain_vec):
+    '''
+    Load pretrained embedding
+    '''
+    vocab2id = {'<s>': 2, '</s>': 3, '<pad>': 1, '<unk>': 0, '<stop>': 4}
+    id2vocab = {2: '<s>', 3: '</s>', 1: '<pad>', 0: '<unk>', 4: '<stop>'}
+    word_pad = {'<s>': 2, '</s>': 3, '<pad>': 1, '<unk>': 0, '<stop>': 4}
+    
+    pad_cnt = len(vocab2id)
+    cnt = len(vocab2id)
+    with open(file_pretrain_vocab, 'r') as fp:
+        for line in fp:
+            arr = re.split(' ', line[:-1])
+            if len(arr) == 1:
+                arr = re.split('<sec>', line[:-1])
+            if arr[0] == ' ':
+                continue
+            if arr[0] in word_pad:
+                continue
+            vocab2id[arr[0]] = cnt
+            id2vocab[cnt] = arr[0]
+            cnt += 1
+    
+    pretrain_vec = np.load(file_pretrain_vec)
+    pad_vec = np.zeros([pad_cnt, pretrain_vec.shape[1]])
+    pretrain_vec = np.vstack((pad_vec, pretrain_vec))
+    
+    return vocab2id, id2vocab, pretrain_vec
+    
 def create_batch_file(path_data, path_work, is_shuffle, fkey_, file_, batch_size):
     '''
     Users cannot rewrite this function, unless they want to rewrite the engine.
