@@ -19,7 +19,6 @@ class End2EndBase(object):
     We start this engine for document-level multi-aspect sentiment classification.
     Possibly extend to other classification tasks.
     Light weight. Data should be relevatively small.
-    Limitation. Cannot handle dropout.
     '''
     def __init__(self, args=None):
         '''
@@ -184,6 +183,10 @@ class End2EndBase(object):
             '''
             Train
             '''
+            for model_name in self.base_models: 
+                self.base_models[model_name].train()
+            for model_name in self.train_models: 
+                self.train_models[model_name].train()
             if cc_model > 0:
                 epoch -= 1
             print('====================================')
@@ -223,6 +226,10 @@ class End2EndBase(object):
                 torch.save(self.train_models[model_name].state_dict(), fmodel)
                 fmodel.close()
         
+            for model_name in self.base_models: 
+                self.base_models[model_name].eval()
+            for model_name in self.train_models: 
+                self.train_models[model_name].eval()
             with torch.no_grad():
                 '''
                 Validate
@@ -310,6 +317,10 @@ class End2EndBase(object):
             shutil.rmtree(vis_dir)
             os.mkdir(vis_dir)
         
+        for model_name in self.base_models: 
+            self.base_models[model_name].eval()
+        for model_name in self.train_models: 
+            self.train_models[model_name].eval()
         with torch.no_grad():
             
             print('Begin Visualization')

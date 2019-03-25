@@ -24,8 +24,7 @@ class EncoderCNN(torch.nn.Module):
         kSize = [int(itm) for itm in kSize]
         kNums = re.split(',', kernel_nums)
         kNums = [int(itm) for itm in kNums]
-        if len(kSize) != len(kNums):
-            raise ValueError
+        assert len(kSize) == len(kNums)
             
         self.convs1 = torch.nn.ModuleList([
             torch.nn.Conv2d(1, kNums[k], (kSize[k], input_size)) 
@@ -33,9 +32,9 @@ class EncoderCNN(torch.nn.Module):
         
     def forward(self, input_):
         '''
-        input_ embeddings.
-        Not finished.
+        input_: 
         '''
+        input_ = input_.unsqueeze(1)
         h0 = [F.relu(conv(input_)).squeeze(3) for conv in self.convs1]
         h0 = [F.max_pool1d(k, k.size(2)).squeeze(2) for k in h0]
         h0 = torch.cat(h0, 1)
