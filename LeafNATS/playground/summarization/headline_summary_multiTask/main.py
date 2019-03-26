@@ -63,8 +63,8 @@ parser.add_argument('--task_key', default='summary', help='summary | title')
 # for evaluation
 parser.add_argument('--file_output', default='summary.txt', help='test output file')
 # for app
-parser.add_argument('--app_model_dir', default='../mt_data_spacy/nats_results/model/', help='directory that stores models.')
-parser.add_argument('--app_data_dir', default='/var/www/html/openNATS/tmp', help='directory that stores data.')
+parser.add_argument('--app_model_dir', default='../model/', help='directory that stores models.')
+parser.add_argument('--app_data_dir', default='/var/www/html/leafNATS/tmp', help='directory that stores data.')
 
 args = parser.parse_args()
 

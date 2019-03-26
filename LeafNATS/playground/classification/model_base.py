@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 import torch
 from torch.autograd import Variable
 
-from LeafNATS.engines.end2end_mtclass import End2EndBase
+from LeafNATS.engines.end2end_class import End2EndBase
 from LeafNATS.data.utils import construct_vocab
 from LeafNATS.data.utils import load_vocab_pretrain
 from LeafNATS.utils.utils import *

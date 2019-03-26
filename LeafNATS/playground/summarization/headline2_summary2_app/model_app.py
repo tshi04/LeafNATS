@@ -177,7 +177,6 @@ class modelApp(modelPointerGenerator):
         
         return output_
         
-            
     def app_worker(self):
         '''
         For the beam search in application.

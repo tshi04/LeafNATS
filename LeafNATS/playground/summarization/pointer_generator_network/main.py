@@ -61,6 +61,9 @@ parser.add_argument('--file_output', default='summaries.txt', help='test output 
 parser.add_argument('--beam_size', type=int, default=5, help='beam size.')
 parser.add_argument('--test_batch_size', type=int, default=1, help='batch size for beam search.')
 parser.add_argument('--copy_words', type=str2bool, default=True, help='Do you want to copy words?')
+# for app
+parser.add_argument('--app_model_dir', default='../../pg_model/', help='directory that stores models.')
+parser.add_argument('--app_data_dir', default='../../', help='directory that stores data.')
 
 args = parser.parse_args()
     
@@ -82,3 +85,8 @@ if args.task == "beam":
 if args.task == "rouge":
     run_pyrouge(args)
     
+if args.task == "app":
+    from .model_app import modelPGApp
+
+    model = modelPGApp(args)
+    model.app2Go()

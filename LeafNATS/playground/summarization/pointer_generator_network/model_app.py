@@ -12,8 +12,8 @@ nlp = spacy.load('en', disable=['logging', 'ner'])
 import torch
 from torch.autograd import Variable
 
-from .model import modelMultiTask
-from LeafNATS.modules.beam_search.beam_search_mt import fast_beam_search
+from .model import modelPointerGenerator
+from LeafNATS.modules.beam_search.beam_search_pg import fast_beam_search
 from LeafNATS.modules.decoding.word_copy import word_copy
 from LeafNATS.data.utils import construct_vocab
 from LeafNATS.data.summarization.load_multitask import *
@@ -21,10 +21,10 @@ from LeafNATS.utils.utils import *
 '''
 pointer generator network
 ''' 
-class modelMultiTaskApp(modelMultiTask):
+class modelPGApp(modelPointerGenerator):
     
     def __init__(self, args):
-        super(modelMultiTaskApp, self).__init__(args=args)
+        super(modelPGApp, self).__init__(args=args)
         
         self.args.data_dir = self.args.app_model_dir
         
@@ -76,11 +76,9 @@ class modelMultiTaskApp(modelMultiTask):
                     1, self.args.beam_size, 1).view(-1, src_var_ex.size(1)).to(self.args.device)
             else:
                 src_text_rep_ex = src_text_rep.clone()
-
-            self.args.task_key = 'title'
+            
             beam_seq, beam_prb, beam_attn_ = fast_beam_search(
-                self.args, self.base_models, self.batch_data,
-                src_text_rep, src_text_rep_ex, curr_batch_size, self.args.task_key)
+                self.args, self.base_models, self.batch_data, src_text_rep, src_text_rep_ex, curr_batch_size)
             beam_out = beam_attn_[:,:,0].squeeze()[:,:self.args.src_seq_lens].data.cpu().numpy()
             beam_out = self.attnWeight2rgbPercent(beam_out)
             trg_arr = word_copy(
@@ -93,29 +91,11 @@ class modelMultiTaskApp(modelMultiTask):
                     break
                 if wd != '<s>' and wd != '</s>':
                     out_arr.append({"key": wd, "attention": beam_out[idx].tolist()})
-            data_input[self.args.task_key] = out_arr
-
-            self.args.task_key = 'summary'
-            beam_seq, beam_prb, beam_attn_ = fast_beam_search(
-                self.args, self.base_models, self.batch_data,
-                src_text_rep, src_text_rep_ex, curr_batch_size, self.args.task_key)
-            beam_out = beam_attn_[:,:,0].squeeze()[:,:self.args.src_seq_lens].data.cpu().numpy()
-            beam_out = self.attnWeight2rgbPercent(beam_out)
-            trg_arr = word_copy(
-                self.args, beam_seq, beam_attn_, src_msk, src_arr, curr_batch_size, 
-                self.batch_data['id2vocab'], self.batch_data['ext_id2oov'])
-            trg_arr = re.split('\s', trg_arr[0])
-            out_arr = []
-            for idx, wd in enumerate(trg_arr):
-                if wd == '<stop>':
-                    break
-                if wd != '<s>' and wd != '</s>':
-                    out_arr.append({"key": wd, "attention": beam_out[idx].tolist()})
-            data_input[self.args.task_key] = out_arr
+            data_input['summary'] = out_arr
 
             print('Write {}.'.format(fTmp+'_out.json'))
             fout = open(fTmp+'_out.json', 'w')
             json.dump(data_input, fout)
             fout.close()
 
-            os.unlink(curr_file)
+#             os.unlink(curr_file)
