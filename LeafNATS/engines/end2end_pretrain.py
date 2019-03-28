@@ -15,10 +15,7 @@ from LeafNATS.utils.utils import show_progress
 
 class End2EndBase(object):
     '''
-    End2End training for multi-task classification.
-    We start this engine for document-level multi-aspect sentiment classification.
-    Possibly extend to other classification tasks.
-    Light weight. Data should be relevatively small.
+    End2End training for Pretraining Parameters
     '''
     def __init__(self, args=None):
         '''
@@ -29,12 +26,8 @@ class End2EndBase(object):
         self.train_models = {}
         self.batch_data = {}
         self.train_data = []
-        self.val_data = []
-        self.test_data = []
-        self.vis_data = []
-        
-        self.pred_data = []
-        self.true_data = []
+       
+        self.global_steps = 0
         
     def build_vocabulary(self):
         '''
@@ -81,22 +74,6 @@ class End2EndBase(object):
     def build_batch(self, batch_):
         '''
         process batch data.
-        '''
-        raise NotImplementedError
-        
-    def test_worker(self):
-        '''
-        Used in decoding.
-        Users can define their own decoding process.
-        You do not have to worry about path and prepare input.
-        '''
-        raise NotImplementedError
-        
-    def run_evaluation(self):
-        '''
-        Used in decoding.
-        Users can define their own decoding process.
-        You do not have to worry about path and prepare input.
         '''
         raise NotImplementedError
     
@@ -173,16 +150,12 @@ class End2EndBase(object):
             batch_size=self.args.batch_size
         )
         # train models
+        if cc_model > 0:
+            cc_model -= 1
         for epoch in range(cc_model, self.args.n_epoch):
             '''
             Train
             '''
-            for model_name in self.base_models: 
-                self.base_models[model_name].train()
-            for model_name in self.train_models: 
-                self.train_models[model_name].train()
-            if cc_model > 0:
-                epoch -= 1
             print('====================================')
             print('Training Epoch: {}'.format(epoch+1))
             self.train_data = create_batch_memory(
@@ -193,9 +166,12 @@ class End2EndBase(object):
             )
             n_batch = len(self.train_data)
             print('The number of batches (training): {}'.format(n_batch))
+            self.global_steps = max(0, epoch) * n_batch
             if self.args.debug:
                 n_batch = 10
             for batch_id in range(n_batch):
+                self.global_steps += 1
+                optimizer = self.build_optimizer(params)
                 
                 self.build_batch(self.train_data[batch_id])
                 loss = self.build_pipelines()
@@ -220,67 +196,3 @@ class End2EndBase(object):
                 torch.save(self.train_models[model_name].state_dict(), fmodel)
                 fmodel.close()
         
-            for model_name in self.base_models: 
-                self.base_models[model_name].eval()
-            for model_name in self.train_models: 
-                self.train_models[model_name].eval()
-            with torch.no_grad():
-                '''
-                Validate
-                '''
-                print('Begin Validation')
-                n_batch = len(self.val_data)
-                print('The number of batches (validation): {}'.format(n_batch))
-                self.pred_data = []
-                self.true_data = []
-                for batch_id in range(n_batch):
-
-                    self.build_batch(self.val_data[batch_id])
-                    ratePred, rateTrue = self.test_worker()
-                    
-                    self.pred_data += ratePred
-                    self.true_data += rateTrue
-
-                    show_progress(batch_id+1, n_batch)
-                print()
-                self.pred_data = np.array(self.pred_data).astype(int)
-                np.savetxt(
-                    os.path.join('..', 'nats_results', 'validate_pred_{}.txt'.format(epoch+1)), 
-                    self.pred_data, fmt='%d')
-    
-                self.true_data = np.array(self.true_data).astype(int)
-                np.savetxt(
-                    os.path.join('..', 'nats_results', 'validate_true_{}.txt'.format(epoch+1)), 
-                    self.true_data, fmt='%d')
-            
-                self.run_evaluation()
-                '''
-                Testing
-                '''
-                print('Begin Testing')
-                n_batch = len(self.test_data)
-                print('The number of batches (testing): {}'.format(n_batch))
-                self.pred_data = []
-                self.true_data = []
-                for batch_id in range(n_batch):
-
-                    self.build_batch(self.test_data[batch_id])
-                    ratePred, rateTrue = self.test_worker()
-                    
-                    self.pred_data += ratePred
-                    self.true_data += rateTrue
-
-                    show_progress(batch_id+1, n_batch)
-                print()
-                self.pred_data = np.array(self.pred_data).astype(int)
-                np.savetxt(
-                    os.path.join('..', 'nats_results', 'test_pred_{}.txt'.format(epoch+1)), 
-                    self.pred_data, fmt='%d')
-    
-                self.true_data = np.array(self.true_data).astype(int)
-                np.savetxt(
-                    os.path.join('..', 'nats_results', 'test_true_{}.txt'.format(epoch+1)), 
-                    self.true_data, fmt='%d')
-            
-                self.run_evaluation()
-                        

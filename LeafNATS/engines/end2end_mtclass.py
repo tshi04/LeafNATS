@@ -36,6 +36,8 @@ class End2EndBase(object):
         self.pred_data = []
         self.true_data = []
         
+        self.global_steps = 0
+        
     def build_vocabulary(self):
         '''
         vocabulary
@@ -179,6 +181,8 @@ class End2EndBase(object):
             batch_size=self.args.batch_size
         )
         # train models
+        if cc_model > 0:
+            cc_model -= 1
         for epoch in range(cc_model, self.args.n_epoch):
             '''
             Train
@@ -187,8 +191,6 @@ class End2EndBase(object):
                 self.base_models[model_name].train()
             for model_name in self.train_models: 
                 self.train_models[model_name].train()
-            if cc_model > 0:
-                epoch -= 1
             print('====================================')
             print('Training Epoch: {}'.format(epoch+1))
             self.train_data = create_batch_memory(
@@ -199,9 +201,12 @@ class End2EndBase(object):
             )
             n_batch = len(self.train_data)
             print('The number of batches (training): {}'.format(n_batch))
+            self.global_steps = max(0, epoch) * n_batch
             if self.args.debug:
                 n_batch = 10
             for batch_id in range(n_batch):
+                self.global_steps += 1
+                optimizer = self.build_optimizer(params)
                 
                 self.build_batch(self.train_data[batch_id])
                 loss = self.build_pipelines()

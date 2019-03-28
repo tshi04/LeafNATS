@@ -28,6 +28,7 @@ class natsEnd2EndBase(object):
         self.base_models = {}
         self.train_models = {}
         self.batch_data = {}
+        self.global_steps = 0
         
     def build_vocabulary(self):
         '''
@@ -165,7 +166,10 @@ class natsEnd2EndBase(object):
                 batch_size=self.args.batch_size
             )
             print('The number of batches: {}'.format(n_batch))
+            self.global_steps = n_batch * max(0, epoch)
             for batch_id in range(n_batch):
+                self.global_steps += 1
+                optimizer = self.build_optimizer(params)
                 if cclb == 0 and batch_id <= uf_model[1]:
                     continue
                 else:
