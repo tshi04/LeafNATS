@@ -41,7 +41,7 @@ In the dataset, \<s\> and \</s\> is used to separate sentences. \<sec\> is used 
 #### Examples
 
 LeafNATS is current under development. A simple way to run models that have already implemented is
-- ```Check:``` Go to [examples](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/examples) to check models we have implemented.
+- ```Check:``` Go to [playground](https://github.com/tshi04/LeafNATS/tree/master/LeafNATS/playground) to check models we have implemented.
 
 - ```Import:``` In run.py, import the example you want to try.
 
