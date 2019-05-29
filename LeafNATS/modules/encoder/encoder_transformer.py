@@ -19,19 +19,18 @@ class TransformerBlock(torch.nn.Module):
     '''
     def __init__(
         self, 
-        hidden_size, 
+        input_size, 
         n_heads, 
-        ff_size, 
         drop_rate
     ):
         super(TransformerBlock, self).__init__()
         # multi-head attention
-        self.attentionMH = MultiHeadedAttention(n_heads, hidden_size, drop_rate)
+        self.attentionMH = MultiHeadedAttention(n_heads, input_size, drop_rate)
         # layer normalization
-        self.norm1 = LayerNormalization(hidden_size)
-        self.norm2 = LayerNormalization(hidden_size)
+        self.norm1 = LayerNormalization(input_size)
+        self.norm2 = LayerNormalization(input_size)
         # layer feed-forward
-        self.layer_ff = PositionwiseFeedForward(hidden_size, ff_size, drop_rate)
+        self.layer_ff = PositionwiseFeedForward(input_size, input_size*4, input_size, drop_rate)
         
         self.drop = torch.nn.Dropout(drop_rate)
 

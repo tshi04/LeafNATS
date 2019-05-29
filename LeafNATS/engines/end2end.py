@@ -59,7 +59,7 @@ class natsEnd2EndBase(object):
         '''
         raise NotImplementedError
         
-    def build_optimizer(self):
+    def build_optimizer(self, params):
         '''
         define optimizer
         '''
@@ -163,13 +163,13 @@ class natsEnd2EndBase(object):
                 is_shuffle=True,
                 fkey_=self.args.task, 
                 file_=self.args.file_corpus,
-                batch_size=self.args.batch_size
+                batch_size=self.args.batch_size,
+                is_lower=self.args.is_lower
             )
             print('The number of batches: {}'.format(n_batch))
             self.global_steps = n_batch * max(0, epoch)
             for batch_id in range(n_batch):
                 self.global_steps += 1
-                optimizer = self.build_optimizer(params)
                 if cclb == 0 and batch_id <= uf_model[1]:
                     continue
                 else:

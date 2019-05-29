@@ -28,6 +28,7 @@ parser.add_argument('--checkpoint', type=int, default=500, help='How often you w
 
 parser.add_argument('--continue_training', type=str2bool, default=True, help='Do you want to continue?')
 parser.add_argument('--train_base_model', type=str2bool, default=False, help='True: Use Pretrained Param | False: Transfer Learning')
+parser.add_argument('--is_lower', type=str2bool, default=True, help='convert all tokens to lower case?')
 '''
 User specified parameters.
 '''

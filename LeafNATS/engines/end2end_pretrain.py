@@ -65,7 +65,13 @@ class End2EndBase(object):
         '''
         raise NotImplementedError
         
-    def build_optimizer(self):
+    def build_optimizer(self, params):
+        '''
+        define optimizer
+        '''
+        raise NotImplementedError
+        
+    def build_scheduler(self, optimizer):
         '''
         define optimizer
         '''
@@ -102,6 +108,10 @@ class End2EndBase(object):
                     params = list(self.base_models[model_name].parameters())
         # define optimizer
         optimizer = self.build_optimizer(params)
+        try:
+            scheduler = self.build_scheduler(optimizer)
+        except:
+            pass
         # load checkpoint
         cc_model = 0
         out_dir = os.path.join('..', 'nats_results')
@@ -137,18 +147,6 @@ class End2EndBase(object):
             shutil.rmtree(out_dir)
             os.mkdir(out_dir)
             
-        self.val_data = create_batch_memory(
-            path_=self.args.data_dir,
-            file_=self.args.file_val,
-            is_shuffle=False,
-            batch_size=self.args.batch_size
-        )
-        self.test_data = create_batch_memory(
-            path_=self.args.data_dir,
-            file_=self.args.file_test,
-            is_shuffle=False,
-            batch_size=self.args.batch_size
-        )
         # train models
         if cc_model > 0:
             cc_model -= 1
@@ -162,16 +160,20 @@ class End2EndBase(object):
                 path_=self.args.data_dir,
                 file_=self.args.file_train,
                 is_shuffle=True,
-                batch_size=self.args.batch_size
+                batch_size=self.args.batch_size,
+                is_lower=self.args.is_lower
             )
             n_batch = len(self.train_data)
             print('The number of batches (training): {}'.format(n_batch))
             self.global_steps = max(0, epoch) * n_batch
+            try:
+                scheduler.step()
+            except:
+                pass
             if self.args.debug:
                 n_batch = 10
             for batch_id in range(n_batch):
                 self.global_steps += 1
-                optimizer = self.build_optimizer(params)
                 
                 self.build_batch(self.train_data[batch_id])
                 loss = self.build_pipelines()

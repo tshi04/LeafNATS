@@ -21,13 +21,14 @@ class PositionwiseFeedForward(torch.nn.Module):
     '''
     def __init__(
         self, 
+        input_size,
         hidden_size,
-        ff_size,
+        output_size,
         drop_rate
     ):
         super(PositionwiseFeedForward, self).__init__()
-        self.ff1 = torch.nn.Linear(hidden_size, ff_size)
-        self.ff2 = torch.nn.Linear(ff_size, hidden_size)
+        self.ff1 = torch.nn.Linear(input_size, hidden_size)
+        self.ff2 = torch.nn.Linear(hidden_size, output_size)
         self.drop = torch.nn.Dropout(drop_rate)
 
     def forward(self, input_):

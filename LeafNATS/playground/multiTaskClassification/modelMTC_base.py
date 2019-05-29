@@ -14,6 +14,7 @@ from torch.autograd import Variable
 
 from LeafNATS.engines.end2end_mtclass import End2EndBase
 from LeafNATS.data.utils import construct_vocab
+from LeafNATS.data.utils import load_vocab_pretrain
 from LeafNATS.utils.utils import *
 '''
 pointer generator network
@@ -27,15 +28,31 @@ class modelMTCBase(End2EndBase):
         '''
         vocabulary
         '''
-        vocab2id, id2vocab = construct_vocab(
-            file_=os.path.join(self.args.data_dir, self.args.file_vocab),
-            max_size=self.args.max_vocab_size,
-            mincount=self.args.word_minfreq)
-        vocab_size = len(vocab2id)
-        self.batch_data['vocab2id'] = vocab2id
-        self.batch_data['id2vocab'] = id2vocab
-        self.batch_data['vocab_size'] = vocab_size
-        print('The vocabulary size: {}'.format(vocab_size))
+        try:
+            emb_source = self.args.emb_source
+        except:
+            emb_source = 'scratch'
+            
+        if emb_source == 'pretrain':
+            vocab2id, id2vocab, pretrain_vec = load_vocab_pretrain(
+                os.path.join(self.args.data_dir, self.args.file_pretrain_vocab),
+                os.path.join(self.args.data_dir, self.args.file_pretrain_vec))
+            vocab_size = len(vocab2id)
+            self.batch_data['vocab2id'] = vocab2id
+            self.batch_data['id2vocab'] = id2vocab
+            self.batch_data['pretrain_emb'] = pretrain_vec
+            self.batch_data['vocab_size'] = vocab_size
+            print('The vocabulary size: {}'.format(vocab_size))
+        elif emb_source == 'scratch':
+            vocab2id, id2vocab = construct_vocab(
+                file_=os.path.join(self.args.data_dir, self.args.file_vocab),
+                max_size=self.args.max_vocab_size,
+                mincount=self.args.word_minfreq)
+            vocab_size = len(vocab2id)
+            self.batch_data['vocab2id'] = vocab2id
+            self.batch_data['id2vocab'] = id2vocab
+            self.batch_data['vocab_size'] = vocab_size
+            print('The vocabulary size: {}'.format(vocab_size))
                     
     def build_optimizer(self, params):
         '''
@@ -113,9 +130,11 @@ class modelMTCBase(End2EndBase):
         avgaccu = []
         avgmse = []
         for k in range(self.args.n_tasks):
-            (p1, r1, f1, _) = precision_recall_fscore_support(self.true_data[:, k], self.pred_data[:, k], average='macro')
-            accu = accuracy_score(self.true_data[:, k], self.pred_data[:, k])
-            mse = mean_squared_error(self.true_data[:, k], self.pred_data[:, k])
+            predlb = [rt for idx, rt in enumerate(self.pred_data[:, k].tolist()) if self.true_data[idx, k] != 0]
+            truelb = [rt for idx, rt in enumerate(self.true_data[:, k].tolist()) if self.true_data[idx, k] != 0]
+            (p1, r1, f1, _) = precision_recall_fscore_support(truelb, predlb, average='macro')
+            accu = accuracy_score(truelb, predlb)
+            mse = mean_squared_error(truelb, predlb)
             avgf1.append(f1)
             avgaccu.append(accu)
             avgmse.append(mse)

@@ -26,7 +26,12 @@ class modelBase(End2EndBase):
         '''
         vocabulary
         '''
-        if self.args.emb_source == 'pretrain':
+        try:
+            emb_source = self.args.emb_source
+        except:
+            emb_source = 'scratch'
+            
+        if emb_source == 'pretrain':
             vocab2id, id2vocab, pretrain_vec = load_vocab_pretrain(
                 os.path.join(self.args.data_dir, self.args.file_pretrain_vocab),
                 os.path.join(self.args.data_dir, self.args.file_pretrain_vec))
@@ -36,7 +41,7 @@ class modelBase(End2EndBase):
             self.batch_data['pretrain_emb'] = pretrain_vec
             self.batch_data['vocab_size'] = vocab_size
             print('The vocabulary size: {}'.format(vocab_size))
-        elif self.args.emb_source == 'scrach':
+        elif emb_source == 'scratch':
             vocab2id, id2vocab = construct_vocab(
                 file_=os.path.join(self.args.data_dir, self.args.file_vocab),
                 max_size=self.args.max_vocab_size,
@@ -45,7 +50,7 @@ class modelBase(End2EndBase):
             self.batch_data['vocab2id'] = vocab2id
             self.batch_data['id2vocab'] = id2vocab
             self.batch_data['vocab_size'] = vocab_size
-            print('The vocabulary size: {}'.format(vocab_size))
+        print('The vocabulary size: {}'.format(vocab_size))
                     
     def build_optimizer(self, params):
         '''
@@ -105,4 +110,6 @@ class modelBase(End2EndBase):
 
         accu = accuracy_score(self.true_data, self.pred_data)
         print('Accuracy={}'.format(np.round(accu, 4)))
+        
+        return accu
         

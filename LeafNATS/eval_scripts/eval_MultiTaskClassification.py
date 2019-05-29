@@ -28,9 +28,11 @@ def evaluation(args):
         avgmse = []
 
         for k in range(args.n_tasks):
-            (p1, r1, f1, _) = precision_recall_fscore_support(true_data[:, k], pred_data[:, k], average='macro')
-            accu = accuracy_score(true_data[:, k], pred_data[:, k])
-            mse = mean_squared_error(true_data[:, k], pred_data[:, k])
+            predlb = [rt for idx, rt in enumerate(pred_data[:, k].tolist()) if true_data[idx, k] != 0]
+            truelb = [rt for idx, rt in enumerate(true_data[:, k].tolist()) if true_data[idx, k] != 0]
+            (p1, r1, f1, _) = precision_recall_fscore_support(truelb, predlb, average='macro')
+            accu = accuracy_score(truelb, predlb)
+            mse = mean_squared_error(truelb, predlb)
             avgf1.append(f1)
             avgaccu.append(accu)
             avgmse.append(mse)
@@ -57,9 +59,11 @@ def evaluation(args):
         avgmse = []
 
         for k in range(args.n_tasks):
-            (p1, r1, f1, _) = precision_recall_fscore_support(true_data[:, k], pred_data[:, k], average='macro')
-            accu = accuracy_score(true_data[:, k], pred_data[:, k])
-            mse = mean_squared_error(true_data[:, k], pred_data[:, k])
+            predlb = [rt for idx, rt in enumerate(pred_data[:, k].tolist()) if true_data[idx, k] != 0]
+            truelb = [rt for idx, rt in enumerate(true_data[:, k].tolist()) if true_data[idx, k] != 0]
+            (p1, r1, f1, _) = precision_recall_fscore_support(truelb, predlb, average='macro')
+            accu = accuracy_score(truelb, predlb)
+            mse = mean_squared_error(truelb, predlb)
             avgf1.append(f1)
             avgaccu.append(accu)
             avgmse.append(mse)

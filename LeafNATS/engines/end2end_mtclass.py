@@ -74,7 +74,13 @@ class End2EndBase(object):
         '''
         raise NotImplementedError
         
-    def build_optimizer(self):
+    def build_optimizer(self, params):
+        '''
+        define optimizer
+        '''
+        raise NotImplementedError
+        
+    def build_scheduler(self, optimizer):
         '''
         define optimizer
         '''
@@ -133,6 +139,10 @@ class End2EndBase(object):
                     params = list(self.base_models[model_name].parameters())
         # define optimizer
         optimizer = self.build_optimizer(params)
+        try:
+            scheduler = self.build_scheduler(optimizer)
+        except:
+            pass
         # load checkpoint
         cc_model = 0
         out_dir = os.path.join('..', 'nats_results')
@@ -172,13 +182,15 @@ class End2EndBase(object):
             path_=self.args.data_dir,
             file_=self.args.file_val,
             is_shuffle=False,
-            batch_size=self.args.batch_size
+            batch_size=self.args.batch_size,
+            is_lower=self.args.is_lower
         )
         self.test_data = create_batch_memory(
             path_=self.args.data_dir,
             file_=self.args.file_test,
             is_shuffle=False,
-            batch_size=self.args.batch_size
+            batch_size=self.args.batch_size,
+            is_lower=self.args.is_lower
         )
         # train models
         if cc_model > 0:
@@ -197,16 +209,21 @@ class End2EndBase(object):
                 path_=self.args.data_dir,
                 file_=self.args.file_train,
                 is_shuffle=True,
-                batch_size=self.args.batch_size
+                batch_size=self.args.batch_size,
+                is_lower=self.args.is_lower
             )
             n_batch = len(self.train_data)
             print('The number of batches (training): {}'.format(n_batch))
             self.global_steps = max(0, epoch) * n_batch
+            try:
+                scheduler.step()
+            except:
+                pass
             if self.args.debug:
-                n_batch = 10
+                n_batch = 1
+            loss_arr = []    
             for batch_id in range(n_batch):
                 self.global_steps += 1
-                optimizer = self.build_optimizer(params)
                 
                 self.build_batch(self.train_data[batch_id])
                 loss = self.build_pipelines()
@@ -223,8 +240,10 @@ class End2EndBase(object):
                         torch.save(self.train_models[model_name].state_dict(), fmodel)
                         fmodel.close()
                 show_progress(batch_id+1, n_batch)
+                loss_arr.append(loss.data.cpu().numpy())
             print()
             # write models
+            print('Training Loss = {}.'.format(np.average(loss_arr)))
             for model_name in self.train_models:
                 fmodel = open(os.path.join(
                     out_dir, model_name+'_'+str(epoch+1)+'.model'), 'wb')
@@ -244,6 +263,8 @@ class End2EndBase(object):
                 print('The number of batches (validation): {}'.format(n_batch))
                 self.pred_data = []
                 self.true_data = []
+                if self.args.debug:
+                    n_batch = 1
                 for batch_id in range(n_batch):
 
                     self.build_batch(self.val_data[batch_id])
@@ -264,7 +285,11 @@ class End2EndBase(object):
                     os.path.join('..', 'nats_results', 'validate_true_{}.txt'.format(epoch+1)), 
                     self.true_data, fmt='%d')
             
-                self.run_evaluation()
+                accu = self.run_evaluation()
+                try:
+                    scheduler.step(accu)
+                except:
+                    pass
                 '''
                 Testing
                 '''
@@ -273,6 +298,8 @@ class End2EndBase(object):
                 print('The number of batches (testing): {}'.format(n_batch))
                 self.pred_data = []
                 self.true_data = []
+                if self.args.debug:
+                    n_batch = 1
                 for batch_id in range(n_batch):
 
                     self.build_batch(self.test_data[batch_id])
@@ -312,7 +339,8 @@ class End2EndBase(object):
             path_=self.args.data_dir,
             file_=self.args.file_vis,
             is_shuffle=False,
-            batch_size=self.args.batch_size
+            batch_size=self.args.batch_size,
+            is_lower=self.args.is_lower
         )
         
         vis_dir = '../nats_results/attn_vis'

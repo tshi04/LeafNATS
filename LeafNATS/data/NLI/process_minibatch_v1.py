@@ -27,8 +27,8 @@ def process_minibatch(input_, vocab2id, premise_max_lens, hypothesis_max_lens):
                 
         premise = data['premise']
         len_premise.append(len(premise))
-        preise2id = [vocab2id[wd] if wd in vocab2id else vocab2id['<unk>'] for wd in premise]
-        premise_arr.append(preise2id)
+        premise2id = [vocab2id[wd] if wd in vocab2id else vocab2id['<unk>'] for wd in premise]
+        premise_arr.append(premise2id)
         
         hypothe = data['hypothesis']
         len_hypothe.append(len(hypothe))

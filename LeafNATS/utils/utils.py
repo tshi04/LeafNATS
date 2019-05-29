@@ -3,6 +3,7 @@
 Please contact tshi@vt.edu
 '''
 import sys
+import numpy as np
 import torch
 from torch.autograd import Variable
 '''
@@ -31,4 +32,21 @@ def tensor_transformer(seq0, batch_size, beam_size):
     seq = seq.repeat(1, 1, beam_size, 1)
     seq = seq.contiguous().view(batch_size, beam_size*beam_size, seq.size(3))
     return seq
-
+'''
+evaluate accuracy
+'''
+def eval_accuracy(preds, golds):
+    
+    nm = len(preds)
+    
+    preds = np.array(preds)
+    golds = np.array(golds)
+    
+    diff = preds - golds
+    diff = diff * diff
+    
+    accu = preds - golds
+    accu[accu != 0] = 1.0
+    accu = 1.0 - accu
+    
+    return np.sum(accu)/nm, np.sum(diff)/nm

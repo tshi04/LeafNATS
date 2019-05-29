@@ -65,13 +65,26 @@ class End2EndBase(object):
         '''
         raise NotImplementedError
         
+    def init_app_model_params(self, idx):
+        '''
+        Initialize Base Model Parameters.
+        self.base_models.
+        '''
+        raise NotImplementedError
+        
     def build_pipelines(self):
         '''
         Pipelines and loss here.
         '''
         raise NotImplementedError
         
-    def build_optimizer(self):
+    def build_optimizer(self, params):
+        '''
+        define optimizer
+        '''
+        raise NotImplementedError
+        
+    def build_scheduler(self, optimizer):
         '''
         define optimizer
         '''
@@ -84,6 +97,14 @@ class End2EndBase(object):
         raise NotImplementedError
         
     def test_worker(self):
+        '''
+        Used in decoding.
+        Users can define their own decoding process.
+        You do not have to worry about path and prepare input.
+        '''
+        raise NotImplementedError
+        
+    def app_worker(self):
         '''
         Used in decoding.
         Users can define their own decoding process.
@@ -124,6 +145,10 @@ class End2EndBase(object):
                     params = list(self.base_models[model_name].parameters())
         # define optimizer
         optimizer = self.build_optimizer(params)
+        try:
+            scheduler = self.build_scheduler(optimizer)
+        except:
+            pass
         # load checkpoint
         cc_model = 0
         out_dir = os.path.join('..', 'nats_results')
@@ -163,13 +188,15 @@ class End2EndBase(object):
             path_=self.args.data_dir,
             file_=self.args.file_val,
             is_shuffle=False,
-            batch_size=self.args.batch_size
+            batch_size=self.args.batch_size,
+            is_lower=self.args.is_lower
         )
         self.test_data = create_batch_memory(
             path_=self.args.data_dir,
             file_=self.args.file_test,
             is_shuffle=False,
-            batch_size=self.args.batch_size
+            batch_size=self.args.batch_size,
+            is_lower=self.args.is_lower
         )
         # train models
         if cc_model > 0:
@@ -188,16 +215,21 @@ class End2EndBase(object):
                 path_=self.args.data_dir,
                 file_=self.args.file_train,
                 is_shuffle=True,
-                batch_size=self.args.batch_size
+                batch_size=self.args.batch_size,
+                is_lower=self.args.is_lower
             )
             n_batch = len(self.train_data)
             print('The number of batches (training): {}'.format(n_batch))
             self.global_steps = max(0, epoch) * n_batch
+            try:
+                scheduler.step()
+            except:
+                pass
             if self.args.debug:
-                n_batch = 10
+                n_batch = 1
+            loss_arr = []
             for batch_id in range(n_batch):
                 self.global_steps += 1
-                optimizer = self.build_optimizer(params)
                 
                 self.build_batch(self.train_data[batch_id])
                 loss = self.build_pipelines()
@@ -214,8 +246,10 @@ class End2EndBase(object):
                         torch.save(self.train_models[model_name].state_dict(), fmodel)
                         fmodel.close()
                 show_progress(batch_id+1, n_batch)
+                loss_arr.append(loss.data.cpu().numpy())
             print()
             # write models
+            print('Training Loss = {}.'.format(np.average(loss_arr)))
             for model_name in self.train_models:
                 fmodel = open(os.path.join(
                     out_dir, model_name+'_'+str(epoch+1)+'.model'), 'wb')
@@ -235,6 +269,8 @@ class End2EndBase(object):
                 print('The number of batches (validation): {}'.format(n_batch))
                 self.pred_data = []
                 self.true_data = []
+                if self.args.debug:
+                    n_batch = 1
                 for batch_id in range(n_batch):
 
                     self.build_batch(self.val_data[batch_id])
@@ -255,7 +291,11 @@ class End2EndBase(object):
                     os.path.join('..', 'nats_results', 'validate_true_{}.txt'.format(epoch+1)), 
                     self.true_data, fmt='%d')
             
-                self.run_evaluation()
+                accu = self.run_evaluation()
+                try:
+                    scheduler.step(accu)
+                except:
+                    pass
                 '''
                 Testing
                 '''
@@ -264,6 +304,8 @@ class End2EndBase(object):
                 print('The number of batches (testing): {}'.format(n_batch))
                 self.pred_data = []
                 self.true_data = []
+                if self.args.debug:
+                    n_batch = 1
                 for batch_id in range(n_batch):
 
                     self.build_batch(self.test_data[batch_id])
@@ -285,4 +327,58 @@ class End2EndBase(object):
                     self.true_data, fmt='%d')
             
                 self.run_evaluation()
-                        
+                
+    def app(self):
+        '''
+        Visualization
+        '''
+        self.build_vocabulary()
+        self.build_models()
+        print(self.base_models)
+        print(self.train_models)
+        if len(self.base_models) > 0:
+            self.init_base_model_params()
+        
+        self.app_data = create_batch_memory(
+            path_=self.args.data_dir,
+            file_=self.args.file_app,
+            is_shuffle=False,
+            batch_size=self.args.batch_size,
+            is_lower=self.args.is_lower
+        )
+        
+        for model_name in self.base_models: 
+            self.base_models[model_name].eval()
+        for model_name in self.train_models: 
+            self.train_models[model_name].eval()
+            
+        with torch.no_grad():
+            for epoch in range(self.args.n_epoch):
+                
+                self.init_app_model_params(epoch+1)
+                
+                print('Begin Testing')
+                n_batch = len(self.app_data)
+                print('The number of batches (App): {}'.format(n_batch))
+                self.pred_data = []
+                self.true_data = []
+                for batch_id in range(n_batch):
+
+                    self.build_batch(self.app_data[batch_id])
+                    ratePred, rateTrue = self.test_worker()
+                    
+                    self.pred_data += ratePred
+                    self.true_data += rateTrue
+
+                    show_progress(batch_id+1, n_batch)
+                print()
+                self.pred_data = np.array(self.pred_data).astype(int)
+                np.savetxt(
+                    os.path.join('..', 'nats_results', 'app_pred_{}.txt'.format(epoch+1)), 
+                    self.pred_data, fmt='%d')
+    
+                self.true_data = np.array(self.true_data).astype(int)
+                np.savetxt(
+                    os.path.join('..', 'nats_results', 'app_true_{}.txt'.format(epoch+1)), 
+                    self.true_data, fmt='%d')
+                            

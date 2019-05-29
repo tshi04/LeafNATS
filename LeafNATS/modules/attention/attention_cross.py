@@ -8,7 +8,7 @@ import torch.nn.functional as F
 
 class CrossAttention(torch.nn.Module):
     '''
-    Implement of multi-head attention.
+    Implement of Co-attention.
     '''
     def __init__(
         self,
@@ -25,11 +25,11 @@ class CrossAttention(torch.nn.Module):
         '''
         batch_size = inputA.size(0)
         
-        inputA = torch.relu(self.proj(inputA))
-        inputB = torch.relu(self.proj(inputB))
+        projA = torch.relu(self.proj(inputA))
+        projB = torch.relu(self.proj(inputB))
         
-        scores = torch.bmm(inputA, inputB.transpose(1, 2))
-        if maskA is not None:
+        scores = torch.bmm(projA, projB.transpose(1, 2))
+        if maskA is not None and maskB is not None:
             maskA = maskA[:, :, None]
             maskB = maskB[:, None, :]
             mask = torch.bmm(maskA, maskB)

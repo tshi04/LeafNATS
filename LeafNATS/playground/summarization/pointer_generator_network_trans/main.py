@@ -30,6 +30,7 @@ parser.add_argument('--train_base_model', type=str2bool, default=False, help='Tr
 parser.add_argument('--use_move_avg', type=str2bool, default=False, help='move average')
 parser.add_argument('--use_optimal_model', type=str2bool, default=True, help='Do you want to use the best model?')
 parser.add_argument('--model_optimal_key', default='0,0', help='epoch,batch')
+parser.add_argument('--is_lower', type=str2bool, default=True, help='convert all tokens to lower case?')
 '''
 User specified parameters.
 '''

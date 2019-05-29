@@ -45,7 +45,7 @@ class MultiHeadedAttention(torch.nn.Module):
         key = key.view(batch_size, -1, self.n_heads, self.n_dk).transpose(1, 2)
         value = self.proj_value(input_)
         value = value.view(batch_size, -1, self.n_heads, self.n_dk).transpose(1, 2)
-        
+                
         # (B, H, S, W) @ (B, H, W, S) -> (B, H, S, S) -softmax-> (B, H, S, S)
         scores = query @ key.transpose(-2, -1)
         scores = scores / math.sqrt(self.n_dk)

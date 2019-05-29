@@ -18,11 +18,14 @@ class LayerNormalization(torch.nn.Module):
         self.gamma = torch.nn.Parameter(torch.ones(size))
         self.beta = torch.nn.Parameter(torch.zeros(size))
         self.eps = eps
+        
+        self.register_parameter('gamma', self.gamma)
+        self.register_parameter('beta', self.beta)
 
     def forward(self, input_):
         mean = torch.mean(input_, -1, keepdim=True)
         std = torch.std(input_, -1, keepdim=True)
-        
+                
         return self.gamma*(input_-mean)/(std+self.eps)+self.beta
     
     

@@ -13,7 +13,8 @@ class EncoderCNN(torch.nn.Module):
         self,
         input_size, # input_ dimension
         kernel_size, # 3,4,5
-        kernel_nums  # 100, 200, 100
+        kernel_nums,  # 100, 200, 100
+        device='cpu'
     ):
         '''
         Implementation of CNN encoder.
@@ -28,7 +29,7 @@ class EncoderCNN(torch.nn.Module):
             
         self.convs1 = torch.nn.ModuleList([
             torch.nn.Conv2d(1, kNums[k], (kSize[k], input_size)) 
-            for k in range(len(kNums))])
+            for k in range(len(kNums))]).to(device)
         
     def forward(self, input_):
         '''

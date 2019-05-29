@@ -67,8 +67,56 @@ def load_vocab_pretrain(file_pretrain_vocab, file_pretrain_vec):
     pretrain_vec = np.vstack((pad_vec, pretrain_vec))
     
     return vocab2id, id2vocab, pretrain_vec
+
+def construct_pos_vocab(file_):
+    '''
+    Construct vocabulary for pos-tag
+    '''
+    vocab2id = {'<pad>': 0}
+    id2vocab = {0: '<pad>'}
+    word_pad = {'<pad>': 0}
     
-def create_batch_file(path_data, path_work, is_shuffle, fkey_, file_, batch_size):
+    cnt = len(vocab2id)
+    with open(file_, 'r') as fp:
+        for line in fp:
+            arr = re.split(' ', line[:-1])
+            if len(arr) == 1:
+                arr = re.split('<sec>', line[:-1])
+            if arr[0] == ' ':
+                continue
+            if arr[0] in word_pad:
+                continue
+            vocab2id[arr[0]] = cnt
+            id2vocab[cnt] = arr[0]
+            cnt += 1
+    
+    return vocab2id, id2vocab
+
+def construct_char_vocab(file_):
+    '''
+    Construct vocabulary for characters
+    '''
+    vocab2id = {'<pad>': 0}
+    id2vocab = {0: '<pad>'}
+    word_pad = {'<pad>': 0}
+    
+    cnt = len(vocab2id)
+    with open(file_, 'r') as fp:
+        for line in fp:
+            arr = re.split(' ', line[:-1])
+            if len(arr) == 1:
+                arr = re.split('<sec>', line[:-1])
+            if arr[0] == ' ':
+                continue
+            if arr[0] in word_pad:
+                continue
+            vocab2id[arr[0]] = cnt
+            id2vocab[cnt] = arr[0]
+            cnt += 1
+    
+    return vocab2id, id2vocab
+    
+def create_batch_file(path_data, path_work, is_shuffle, fkey_, file_, batch_size, is_lower=True):
     '''
     Users cannot rewrite this function, unless they want to rewrite the engine.
 
@@ -88,7 +136,9 @@ def create_batch_file(path_data, path_work, is_shuffle, fkey_, file_, batch_size
     corpus_arr = []
     fp = open(file_name, 'r')
     for line in fp:
-        corpus_arr.append(line.lower())
+        if is_lower:
+            line = line.lower()
+        corpus_arr.append(line)
     fp.close()
     if is_shuffle:
         random.shuffle(corpus_arr)
@@ -121,14 +171,16 @@ Users cannot rewrite this function, unless they want to rewrite the engine.
 
 This will store data in memeory.
 '''
-def create_batch_memory(path_, file_, is_shuffle, batch_size):
+def create_batch_memory(path_, file_, is_shuffle, batch_size, is_lower=True):
     
     file_name = os.path.join(path_, file_)
     
     corpus_arr = []
-    fp = open(file_name, 'r')
+    fp = open(file_name, 'r', encoding="iso-8859-1")
     for line in fp:
-        corpus_arr.append(line.lower())
+        if is_lower:
+            line = line.lower()
+        corpus_arr.append(line)
     fp.close()
     if is_shuffle:
         random.shuffle(corpus_arr)
