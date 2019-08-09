@@ -7,7 +7,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 
 from LeafNATS.modules.encoder.encoder_rnn import EncoderRNN
-from LeafNATS.playground.dmsc.model_base import modelDMSCBase
+from dmsc.model_base import modelDMSCBase
 
 
 class modelDMSC(modelDMSCBase):
