@@ -10,6 +10,9 @@ Current version of LeafNATS can handle following tasks
 |Dir|Brief|
 |-|-|
 |LeafNATS| Core functions and modules of LeafNATS library. |
-|nats|Neural Abstractive Text Summarization [NATS](https://arxiv.org/pdf/1812.02303.pdf) & [LeafNATS](https://www.aclweb.org/anthology/N19-4012)|
+|dmsc| Document Level Multi-Aspect Sentiment Classification (DMSC).|
+|nats|Neural Abstractive Text Summarization (NATS). [NATS](https://arxiv.org/pdf/1812.02303.pdf) & [LeafNATS](https://www.aclweb.org/anthology/N19-4012).|
+|nli|Natural Language Inference (NLI).|
+|seq2sql|Sequence-to-SQL generation or Question-to-SQL generation.|
 
 
