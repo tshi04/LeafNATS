@@ -5,23 +5,21 @@ Please contact tshi@vt.edu
 import torch
 from torch.autograd import Variable
 
+
 class natsEmbedding(torch.nn.Module):
-    
-    def __init__(
-        self,
-        vocab_size, # vocab size
-        emb_dim, # embedding dimension
-        share_emb_weight
-    ):
+
+    def __init__(self,
+                 vocab_size, emb_dim,
+                 share_emb_weight=True):
         '''
         embedding and decoding.
         '''
-        super(natsEmbedding, self).__init__()
-        
+        super().__init__()
+
         self.embedding = torch.nn.Embedding(
             vocab_size, emb_dim)
         torch.nn.init.uniform_(self.embedding.weight, -1.0, 1.0)
-        
+
         '''
         For embedding weight sharing.
         '''
@@ -35,11 +33,9 @@ class natsEmbedding(torch.nn.Module):
         get the embedding
         '''
         return self.embedding(input_)
-    
+
     def get_decode2vocab(self, input_):
         '''
         from vector to vocab prediction
         '''
         return self.proj2vocab(input_)
-    
-    
