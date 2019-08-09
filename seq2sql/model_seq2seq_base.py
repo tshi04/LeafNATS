@@ -2,16 +2,16 @@
 @author Ping Wang and Tian Shi
 Please contact ping@vt.edu or tshi@vt.edu
 '''
+import copy
 import os
 import time
-import copy
-import numpy as np
 
+import numpy as np
 import torch
 from torch.autograd import Variable
 
-from LeafNATS.engines.end2end_large import End2EndBase
 from LeafNATS.data.utils import construct_vocab
+from LeafNATS.engines.end2end_large import End2EndBase
 from LeafNATS.modules.decoding.word_copy import word_copy
 
 

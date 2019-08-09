@@ -8,14 +8,14 @@ import time
 import torch
 from torch.autograd import Variable
 
-from seq2sql.model_seq2seq_base import modelSeq2SeqBase
 from LeafNATS.data.seq2sql.process_batch_cqa_v1 import process_batch
-
-from LeafNATS.modules.embedding.nats_embedding import natsEmbedding
-from LeafNATS.modules.encoder.encoder_rnn import EncoderRNN
-from LeafNATS.modules.encoder2decoder.nats_encoder2decoder import natsEncoder2Decoder
-from LeafNATS.modules.attention.nats_attention_encoder import AttentionEncoder
 from LeafNATS.modules.attention.nats_attention_decoder import AttentionDecoder
+from LeafNATS.modules.attention.nats_attention_encoder import AttentionEncoder
+from LeafNATS.modules.embedding.nats_embedding import natsEmbedding
+from LeafNATS.modules.encoder2decoder.nats_encoder2decoder import \
+    natsEncoder2Decoder
+from LeafNATS.modules.encoder.encoder_rnn import EncoderRNN
+from seq2sql.model_seq2seq_base import modelSeq2SeqBase
 
 
 class modelABS(modelSeq2SeqBase):
