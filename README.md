@@ -5,9 +5,9 @@
 [![image](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://github.com/tshi04/LeafNATS/issues)
 
 The initial version of LeafNATS is built for neural abstractive text summarization.
-Current version of LeafNATS can handle following tasks
+Current version of LeafNATS can handle following tasks:
 
-|Dir|Brief|
+|Directory|Brief|
 |-|-|
 |LeafNATS| Core functions and modules of LeafNATS library. |
 |dmsc| Document Level Multi-Aspect Sentiment Classification (DMSC).|
