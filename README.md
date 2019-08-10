@@ -7,12 +7,12 @@
 The initial version of LeafNATS is built for neural abstractive text summarization.
 Current version of LeafNATS can handle following tasks:
 
-|Directory|Brief|
-|-|-|
-|LeafNATS| Core functions and modules of LeafNATS library. |
-|dmsc| Document Level Multi-Aspect Sentiment Classification (DMSC).|
-|nats|Neural Abstractive Text Summarization (NATS). [NATS](https://arxiv.org/pdf/1812.02303.pdf) & [LeafNATS](https://www.aclweb.org/anthology/N19-4012).|
-|nli|Natural Language Inference (NLI).|
-|seq2sql|Sequence-to-SQL generation or Question-to-SQL generation.|
+|Directory|Brief|Paper|
+|-|-|-|
+|LeafNATS| Core functions and modules of LeafNATS library. ||
+|dmsc| Document Level Multi-Aspect Sentiment Classification (DMSC).||
+|nats|Neural Abstractive Text Summarization (NATS).|[NATS](https://arxiv.org/pdf/1812.02303.pdf), [LeafNATS](https://www.aclweb.org/anthology/N19-4012)|
+|nli|Natural Language Inference (NLI).||
+|seq2sql|Sequence-to-SQL generation or Question-to-SQL generation.|[TREQS](https://arxiv.org/pdf/1908.01839.pdf)|
 
 
