@@ -12,20 +12,16 @@ def process_minibatch(input_, vocab2id, max_lens):
     '''
     Process the minibatch for beeradvocate and tripadvisor datasets
     The data format
-    [0 overall] 1 3 1 4\t\t\tSOMETHING\t\t\treview
-    For review, sentences are seperated by <ssssss>.
+    [rating]\t\t\treview
     '''
     len_review = []
     review_arr = []
     rating_arr = []
     for line in input_:
         arr = re.split('\t\t\t', line[:-1])
+        rating_arr.append(int(arr[0]))
 
-        tmp_rate = re.split(r'\s', arr[0])[1:]
-        tmp_rate = list(filter(None, tmp_rate))
-        rating_arr.append([int(rt) for rt in tmp_rate])
-
-        review = re.split(r'\s|<ssssss>', arr[-1])
+        review = re.split(r'\s', arr[-1])
         review = list(filter(None, review))
         len_review.append(len(review))
 
@@ -41,8 +37,6 @@ def process_minibatch(input_, vocab2id, max_lens):
 
     review_var = Variable(torch.LongTensor(review_arr))
     rating_var = Variable(torch.LongTensor(rating_arr))
-    rating_var -= 1
-    rating_var[rating_var < 0] = -1
 
     weight_mask = Variable(torch.FloatTensor(review_arr))
     weight_mask[weight_mask != float(vocab2id['<pad>'])] = -1.0

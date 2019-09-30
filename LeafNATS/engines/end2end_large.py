@@ -105,8 +105,8 @@ class End2EndBase(object):
         '''
         self.build_vocabulary()
         self.build_models()
-        print(self.base_models)
-        print(self.train_models)
+        pprint(self.base_models)
+        pprint(self.train_models)
         if len(self.base_models) > 0:
             self.init_base_model_params()
         # here it is necessary to put list. Instead of directly append.

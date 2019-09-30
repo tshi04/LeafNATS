@@ -131,8 +131,8 @@ class End2EndBase(object):
         '''
         self.build_vocabulary()
         self.build_models()
-        print(self.base_models)
-        print(self.train_models)
+        pprint(self.base_models)
+        pprint(self.train_models)
         if len(self.base_models) > 0:
             self.init_base_model_params()
         # here it is necessary to put list. Instead of directly append.
@@ -227,7 +227,7 @@ class End2EndBase(object):
             except:
                 pass
             if self.args.debug:
-                n_batch = 1
+                n_batch = 3
             loss_arr = []
             accu_best = 0
             for batch_id in range(n_batch):
@@ -262,7 +262,7 @@ class End2EndBase(object):
                         self.pred_data = []
                         self.true_data = []
                         if self.args.debug:
-                            val_batch = 1
+                            val_batch = 3
                         for val_id in range(val_batch):
                             self.build_batch(self.val_data[val_id])
                             ratePred, rateTrue = self.test_worker()
@@ -319,7 +319,7 @@ class End2EndBase(object):
                             self.pred_data = []
                             self.true_data = []
                             if self.args.debug:
-                                test_batch = 1
+                                test_batch = 3
                             for test_id in range(test_batch):
                                 self.build_batch(self.test_data[test_id])
                                 ratePred, rateTrue = self.test_worker()

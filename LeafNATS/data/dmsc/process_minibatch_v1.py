@@ -20,7 +20,7 @@ def process_minibatch(input_, vocab2id, max_lens):
     rating_arr = []
     feat_arr = []
     for line in input_:
-        arr = re.split('<sec>', line[:-1].lower())
+        arr = re.split('<sec>', line[:-1])
 
         tmp_rate = re.split(r'\s', arr[-2])
         rating_arr.append([int(round(float(itm)))-1 for itm in tmp_rate[:-1]])

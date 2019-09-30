@@ -8,7 +8,7 @@ from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import mean_squared_error
 
-def eval_dmsc(preds, golds):
+def eval_accu_mse_v1(preds, golds):
     '''
     evaluate accuracy
     Here, the labels cannot be 0. 
