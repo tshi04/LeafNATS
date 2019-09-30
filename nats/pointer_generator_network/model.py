@@ -242,6 +242,7 @@ class modelPointerGenerator(natsEnd2EndBase):
             src_msk = src_msk.to(self.args.device)
             src_var = src_var.to(self.args.device)
             src_var_ex = src_var_ex.to(self.args.device)
+            self.batch_data['ext_id2oov'] = ext_id2oov
 
             curr_batch_size = src_var.size(0)
             src_text_rep = src_var.unsqueeze(1).clone().repeat(
