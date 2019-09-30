@@ -73,7 +73,10 @@ def fast_beam_search(args, models, batch_data,
         logits = logits.view(trg_h.size(0), trg_h.size(1), logits.size(1))
         logits = torch.softmax(logits, dim=2)
 
-        ex_vocab_size = len(batch_data['ext_id2oov'])
+        try:
+            ex_vocab_size = len(batch_data['ext_id2oov'])
+        except:
+            ex_vocab_size = 0
         vocab_size = len(batch_data['vocab2id']) + ex_vocab_size
         if args.pointer_net:
             if args.oov_explicit and ex_vocab_size > 0:
